@@ -29,6 +29,7 @@ import com.example.jungle.keepinmind1.Fragment.ManageMoneyFragment;
 import com.example.jungle.keepinmind1.R;
 import com.example.jungle.keepinmind1.Service.DownloadService;
 import com.example.jungle.keepinmind1.Utils.PublicUtil.DownFileUtil;
+import com.example.jungle.keepinmind1.Utils.PublicUtil.PhotoDialog;
 
 import org.litepal.LitePal;
 
@@ -145,7 +146,8 @@ public class TotalActivity extends AppCompatActivity implements View.OnClickList
                     animationHint(fab_three, -450);
                     isShow = false;
                 }
-                AlertDialogShow();
+//                AlertDialogShow();
+                new PhotoDialog(TotalActivity.this).show();
                 break;
             case R.id.fab_three:
                 if (isShow) {
@@ -154,8 +156,6 @@ public class TotalActivity extends AppCompatActivity implements View.OnClickList
                     animationHint(fab_three, -450);
                     isShow = false;
                 }
-
-
                 Intent intent1 = new Intent(this, SpeechRecognitionActivity.class);
                 startActivity(intent1);
 
