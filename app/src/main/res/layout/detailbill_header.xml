@@ -1,0 +1,486 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <RelativeLayout
+        android:id="@+id/toolbar_layout"
+        android:layout_width="match_parent"
+        android:layout_height="250dp"
+        android:fitsSystemWindows="true"
+        >
+
+        <ImageView
+            android:id="@+id/background"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:scaleType="centerCrop"
+            android:src="@drawable/beijing"
+             />
+
+
+        <RelativeLayout
+            android:id="@+id/toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentTop="true"
+            android:orientation="horizontal"
+            >
+
+            <TextView
+                android:id="@+id/month"
+                android:layout_width="wrap_content"
+                android:layout_height="30dp"
+                android:layout_marginLeft="16dp"
+                android:layout_marginTop="16dp"
+                android:text="12"
+                android:textColor="#f09a3e"
+                android:textSize="28sp" />
+
+            <TextView
+                android:id="@+id/year"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignBaseline="@+id/month"
+                android:layout_alignBottom="@+id/month"
+                android:layout_gravity="bottom"
+                android:layout_marginLeft="6dp"
+                android:layout_toEndOf="@+id/month"
+                android:layout_toRightOf="@+id/month"
+                android:text="/2017" />
+
+            <ImageButton
+                android:id="@+id/hindButton"
+                android:layout_width="14dp"
+                android:layout_height="14dp"
+                android:layout_alignBottom="@+id/year"
+                android:layout_gravity="bottom"
+                android:layout_marginLeft="11dp"
+                android:layout_marginStart="11dp"
+                android:layout_toEndOf="@+id/year"
+                android:layout_toRightOf="@+id/year"
+                android:src="@mipmap/ic_launcher" />
+
+            <ImageView
+                android:id="@+id/menuButton"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:layout_alignParentEnd="true"
+                android:layout_alignParentRight="true"
+                android:layout_alignTop="@+id/month"
+                android:layout_gravity="bottom"
+                android:layout_marginRight="8dp"
+                android:src="@mipmap/ic_launcher" />
+
+        </RelativeLayout>
+        <RelativeLayout
+            android:layout_height="wrap_content"
+            android:layout_width="wrap_content"
+            android:layout_marginLeft="16dp"
+            android:layout_marginStart="16dp"
+            android:layout_below="@+id/toolbar"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
+            android:layout_marginTop="26dp">
+
+
+
+
+            <LinearLayout
+                android:id="@+id/Linear4"
+                android:layout_height="wrap_content"
+                android:layout_width="wrap_content"
+                android:orientation="vertical"
+                >
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal"
+                    android:id="@+id/l">
+
+                    <TextView
+                        android:id="@+id/textView"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:gravity="center_vertical"
+                        android:text="本月收入"
+                        />
+
+                    <TextView
+                        android:id="@+id/monthIn"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="40dp"
+                        android:text="$10.00元" />
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_marginTop="40dp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal"
+                    android:id="@+id/linearLayout3">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:gravity="center_vertical"
+                        android:text="本月支出" />
+
+                    <TextView
+                        android:id="@+id/monthOut"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="40dp"
+                        android:text="$10.00元" />
+
+
+                </LinearLayout>
+                <LinearLayout
+                    android:layout_marginTop="40dp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal"
+                    android:id="@+id/linearLayout2">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:gravity="center_vertical"
+                        android:text="本月可用" />
+
+                    <TextView
+                        android:id="@+id/monthUse"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="40dp"
+                        android:text="$10.00元" />
+
+                </LinearLayout>
+
+
+
+
+            </LinearLayout>
+
+
+        </RelativeLayout>
+
+
+
+
+
+
+    </RelativeLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/toolbar_layout"
+        android:id="@+id/linearLayout"
+        android:orientation="vertical"
+        android:paddingBottom="5dp">
+
+        <Button
+            android:id="@+id/Accounting"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="6dp"
+            android:background="@color/colorBlue"
+            android:elevation="10dp"
+            android:text="记 一 笔"
+            android:textColor="@color/colorWhite"
+            android:textSize="18sp"
+             />
+        <RelativeLayout
+            xmlns:android="http://schemas.android.com/apk/res/android"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="4dp"
+            android:background="@color/colorWhite">
+
+            <ImageView
+                android:id="@+id/today_pic"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:src="@drawable/today"
+                android:layout_margin="8dp"
+                android:layout_centerVertical="true"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentStart="true" />
+
+
+
+            <TextView
+                android:id="@+id/today_date"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignTop="@+id/today_pic"
+                android:layout_marginLeft="12dp"
+                android:layout_marginTop="3dp"
+                android:layout_toEndOf="@+id/today_pic"
+                android:layout_toRightOf="@+id/today_pic"
+                android:textSize="16sp"
+                android:text="今天"
+                android:textColor="@android:color/black" />
+
+            <TextView
+                android:id="@+id/today_dateLine"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="1 - 1 "
+                android:layout_below="@+id/today_date"
+                android:layout_alignLeft="@+id/today_date"
+                android:layout_alignStart="@+id/today_date" />
+            <TextView
+                android:id="@+id/today_add"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="0.00"
+                android:layout_alignTop="@+id/today_date"
+                android:layout_toLeftOf="@+id/imageView3"
+                android:layout_toStartOf="@+id/imageView3"
+                android:layout_marginRight="34dp"
+                android:layout_marginEnd="34dp"
+                />
+            <TextView
+                android:id="@+id/today_decrease"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="0.00"
+                android:layout_marginRight="34dp"
+                android:layout_marginEnd="34dp"
+                android:layout_below="@+id/today_date"
+                android:layout_toLeftOf="@+id/imageView3"
+                android:layout_toStartOf="@+id/imageView3" />
+
+
+            <ImageView
+                android:id="@+id/imageView3"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:src="@drawable/jump" />
+
+        </RelativeLayout>
+        <RelativeLayout
+            xmlns:android="http://schemas.android.com/apk/res/android"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="4dp"
+            android:background="@color/colorWhite">
+
+            <ImageView
+                android:id="@+id/week_pic"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:src="@drawable/week"
+                android:layout_margin="8dp"
+                android:layout_centerVertical="true"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentStart="true" />
+
+
+
+            <TextView
+                android:id="@+id/week_date"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignTop="@+id/week_pic"
+                android:layout_marginLeft="12dp"
+                android:layout_marginTop="3dp"
+                android:layout_toEndOf="@+id/week_pic"
+                android:layout_toRightOf="@+id/week_pic"
+                android:textSize="16sp"
+                android:text="本周"
+                android:textColor="@android:color/black" />
+
+            <TextView
+                android:id="@+id/week_dateLine"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="1 - 1 "
+                android:layout_below="@+id/week_date"
+                android:layout_alignLeft="@+id/week_date"
+                android:layout_alignStart="@+id/week_date" />
+            <TextView
+                android:id="@+id/week_add"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="0.00"
+                android:layout_alignTop="@+id/week_date"
+                android:layout_marginRight="34dp"
+                android:layout_marginEnd="34dp"
+                android:layout_toLeftOf="@+id/imageView4"
+                android:layout_toStartOf="@+id/imageView4" />
+            <TextView
+                android:id="@+id/week_decrease"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="0.00"
+                android:layout_marginRight="34dp"
+                android:layout_marginEnd="34dp"
+                android:layout_below="@+id/week_date"
+                android:layout_toLeftOf="@+id/imageView4"
+                android:layout_toStartOf="@+id/imageView4" />
+
+            <ImageView
+                android:id="@+id/imageView4"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:src="@drawable/jump" />
+
+        </RelativeLayout>
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="4dp"
+            android:background="@color/colorWhite">
+
+            <ImageView
+                android:id="@+id/month_pic"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:src="@drawable/month"
+                android:layout_margin="8dp"
+                android:layout_centerVertical="true"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentStart="true" />
+
+
+
+            <TextView
+                android:id="@+id/month_date"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignTop="@+id/month_pic"
+                android:layout_marginLeft="12dp"
+                android:layout_marginTop="3dp"
+                android:layout_toEndOf="@+id/month_pic"
+                android:layout_toRightOf="@+id/month_pic"
+                android:textSize="16sp"
+                android:text="本月"
+                android:textColor="@android:color/black" />
+
+            <TextView
+                android:id="@+id/month_dateLine"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="1 - 1 "
+                android:layout_below="@+id/month_date"
+                android:layout_alignLeft="@+id/month_date"
+                android:layout_alignStart="@+id/month_date" />
+            <TextView
+                android:id="@+id/month_add"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="0.00"
+                android:layout_alignTop="@+id/month_date"
+                android:layout_toLeftOf="@+id/imageView5"
+                android:layout_marginRight="34dp"
+                android:layout_marginEnd="34dp"
+                android:layout_toStartOf="@+id/imageView5" />
+            <TextView
+                android:id="@+id/month_decrease"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="0.00"
+                android:layout_marginRight="34dp"
+                android:layout_marginEnd="34dp"
+                android:layout_alignBottom="@+id/month_pic"
+                android:layout_toLeftOf="@+id/imageView5"
+                android:layout_toStartOf="@+id/imageView5" />
+
+            <ImageView
+                android:id="@+id/imageView5"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:src="@drawable/jump" />
+
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="4dp"
+            android:background="@color/colorWhite">
+
+            <ImageView
+                android:id="@+id/year_pic"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:src="@drawable/year"
+                android:layout_margin="8dp"
+                android:layout_centerVertical="true"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentStart="true" />
+
+
+
+            <TextView
+                android:id="@+id/year_date"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignTop="@+id/year_pic"
+                android:layout_marginLeft="12dp"
+                android:layout_marginTop="3dp"
+                android:layout_toEndOf="@+id/year_pic"
+                android:layout_toRightOf="@+id/year_pic"
+                android:textSize="16sp"
+                android:text="本年"
+                android:textColor="@android:color/black" />
+
+            <TextView
+                android:id="@+id/year_dateLine"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="1 - 1 "
+                android:layout_below="@+id/year_date"
+                android:layout_alignLeft="@+id/year_date"
+                android:layout_alignStart="@+id/year_date" />
+            <TextView
+                android:id="@+id/year_add"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="0.00"
+                android:layout_marginRight="34dp"
+                android:layout_marginEnd="34dp"
+                android:layout_alignTop="@+id/year_date"
+                android:layout_toLeftOf="@+id/imageView6"
+                android:layout_toStartOf="@+id/imageView6"/>
+            <TextView
+                android:id="@+id/year_decrease"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="0.00"
+                android:layout_marginRight="34dp"
+                android:layout_marginEnd="34dp"
+                android:layout_below="@+id/year_add"
+                android:layout_toLeftOf="@+id/imageView6"
+                android:layout_toStartOf="@+id/imageView6" />
+
+            <ImageView
+                android:id="@+id/imageView6"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:src="@drawable/jump" />
+
+        </RelativeLayout>
+
+    </LinearLayout>
+
+</RelativeLayout>

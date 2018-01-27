@@ -1,0 +1,33 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.example.jungle.keepinmind1.Fragment.PieChartFragment">
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:scrollbars="none"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <lecho.lib.hellocharts.view.PieChartView
+                android:id="@+id/piechartIn"
+                android:layout_width="match_parent"
+                android:layout_height="320dp"></lecho.lib.hellocharts.view.PieChartView>
+
+            <lecho.lib.hellocharts.view.PieChartView
+                android:id="@+id/piechartOut"
+                android:layout_width="match_parent"
+                android:layout_height="320dp"
+                android:layout_below="@id/piechartIn"></lecho.lib.hellocharts.view.PieChartView>
+
+        </RelativeLayout>
+
+    </ScrollView>
+
+</RelativeLayout>

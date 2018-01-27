@@ -1,0 +1,261 @@
+package com.example.jungle.keepinmind1.Activity;
+
+import android.animation.AnimatorSet;
+import android.animation.ObjectAnimator;
+import android.content.ContentValues;
+import android.content.DialogInterface;
+import android.content.Intent;
+import android.net.Uri;
+import android.os.Environment;
+import android.provider.MediaStore;
+import android.support.design.widget.FloatingActionButton;
+import android.support.design.widget.TabLayout;
+import android.support.v4.app.Fragment;
+import android.support.v4.view.ViewPager;
+import android.support.v4.widget.DrawerLayout;
+import android.support.v7.app.AlertDialog;
+import android.support.v7.app.AppCompatActivity;
+import android.os.Bundle;
+import android.support.v7.widget.Toolbar;
+import android.view.View;
+import android.view.animation.AnticipateInterpolator;
+import android.view.animation.OvershootInterpolator;
+import android.widget.Toast;
+
+import com.example.jungle.keepinmind1.Adapter.ViewPagerAdapter;
+import com.example.jungle.keepinmind1.Fragment.AccountFragment;
+import com.example.jungle.keepinmind1.Fragment.DetailBillFragment;
+import com.example.jungle.keepinmind1.Fragment.ManageMoneyFragment;
+import com.example.jungle.keepinmind1.R;
+import com.example.jungle.keepinmind1.Service.DownloadService;
+import com.example.jungle.keepinmind1.Utils.PublicUtil.DownFileUtil;
+
+import org.litepal.LitePal;
+
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+
+import static android.os.Environment.getExternalStorageState;
+
+public class TotalActivity extends AppCompatActivity implements View.OnClickListener {
+
+    private Toolbar toolbar;
+    private android.support.design.widget.FloatingActionButton fab, fab_one, fab_two, fab_three;
+
+    private Uri photoUri1;
+    private static final int PHOTO_REQUEST_CAMERA = 1;// 拍照
+    private static final int PHOTO_REQUEST_GALLERY = 2;// 从相册中选择
+
+    private boolean isShow = false;
+
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_total);
+        LitePal.getDatabase();
+
+        final DrawerLayout drawerLayout = (DrawerLayout) findViewById(R.id.drawer);
+        toolbar = (Toolbar) findViewById(R.id.toolbar);
+        if (!(DownFileUtil.CheckExistFile(Environment.getExternalStorageDirectory() + "/Download/tessdata/chi") && DownFileUtil.CheckExistFile(Environment.getExternalStorageDirectory() + "/Download/tessdata/eng"))) {
+            Intent intent = new Intent(this, DownloadService.class);
+            startService(intent);
+        }
+        initViewPager();
+        initView();
+
+    }
+
+    private void initViewPager() {
+
+        TabLayout tabLayout = (TabLayout) findViewById(R.id.tabLayout);
+        ViewPager viewPager = (ViewPager) findViewById(R.id.viewPager);
+        List<Fragment> viewList = new ArrayList<>();
+        List<String> titleList = new ArrayList<>();
+        titleList.add("流水");
+        titleList.add("账户");
+        titleList.add("理财");
+        viewList.add(new DetailBillFragment(this));
+        viewList.add(new AccountFragment());
+        viewList.add(new ManageMoneyFragment());
+
+        ViewPagerAdapter mViewPagerAdapter = new ViewPagerAdapter(getSupportFragmentManager(), viewList, titleList);
+        tabLayout.setupWithViewPager(viewPager);
+        viewPager.setAdapter(mViewPagerAdapter);
+        viewPager.setOffscreenPageLimit(1);
+    }
+
+    private void initView() {
+        fab = (android.support.design.widget.FloatingActionButton) findViewById(R.id.fab);
+        fab_one = (android.support.design.widget.FloatingActionButton) findViewById(R.id.fab_one);
+        fab_two = (FloatingActionButton) findViewById(R.id.fab_two);
+        fab_three = (FloatingActionButton) findViewById(R.id.fab_three);
+
+        fab.setOnClickListener(this);
+        fab_one.setOnClickListener(this);
+        fab_two.setOnClickListener(this);
+        fab_three.setOnClickListener(this);
+    }
+
+    private void animationShow(View view, int translateY) {
+        if (view != null) {
+            view.setVisibility(View.VISIBLE);
+        }
+        AnimatorSet set = new AnimatorSet();
+        set.playTogether(
+                ObjectAnimator.ofFloat(view, "translationY", 0, translateY),
+                ObjectAnimator.ofFloat(view, "alpha", 0f, 1f));
+        set.setInterpolator(new OvershootInterpolator());
+        set.start();
+
+    }
+
+    @Override
+    public void onClick(View v) {
+        switch (v.getId()) {
+            case R.id.fab:
+                if (!isShow) {
+                    animationShow(fab_one, -150);
+                    animationShow(fab_two, -300);
+                    animationShow(fab_three, -450);
+                    isShow = true;
+                } else {
+                    animationHint(fab_one, -150);
+                    animationHint(fab_two, -300);
+                    animationHint(fab_three, -450);
+                    isShow = false;
+                }
+                break;
+            case R.id.fab_one:
+                if (isShow) {
+                    animationHint(fab_one, -150);
+                    animationHint(fab_two, -300);
+                    animationHint(fab_three, -450);
+                    isShow = false;
+                }
+                Intent intent = new Intent(this, ChartActivity.class);
+                startActivity(intent);
+                break;
+            case R.id.fab_two:
+                if (isShow) {
+                    animationHint(fab_one, -150);
+                    animationHint(fab_two, -300);
+                    animationHint(fab_three, -450);
+                    isShow = false;
+                }
+                AlertDialogShow();
+                break;
+            case R.id.fab_three:
+                if (isShow) {
+                    animationHint(fab_one, -150);
+                    animationHint(fab_two, -300);
+                    animationHint(fab_three, -450);
+                    isShow = false;
+                }
+
+
+                Intent intent1 = new Intent(this, SpeechRecognitionActivity.class);
+                startActivity(intent1);
+
+            default:
+                if (isShow) {
+                    animationHint(fab_one, -150);
+                    animationHint(fab_two, -300);
+                    animationHint(fab_three, -450);
+                    isShow = false;
+                }
+                break;
+        }
+    }
+
+    private void animationHint(View view, int translateY) {
+        if (view != null) {
+            view.setVisibility(View.VISIBLE);
+        }
+        AnimatorSet set = new AnimatorSet();
+        set.playTogether(
+                ObjectAnimator.ofFloat(view, "translationY", translateY, 0),
+                ObjectAnimator.ofFloat(view, "alpha", 1f, 0f));
+
+        set.setInterpolator(new AnticipateInterpolator());
+        set.start();
+
+
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (requestCode == PHOTO_REQUEST_GALLERY) {
+            if (data != null) {
+// 得到图片的全路径
+
+                photoUri1 = data.getData();
+                Intent intent1 = new Intent(TotalActivity.this, PhotoActivity.class);
+                intent1.setData(photoUri1);
+                startActivity(intent1);
+
+            }
+
+        } else if (requestCode == PHOTO_REQUEST_CAMERA) {
+            if (hasSdcard()) {
+                if (resultCode == -1) {
+
+                    Intent intent1 = new Intent(TotalActivity.this, PhotoActivity.class);
+                    intent1.setData(photoUri1);
+                    startActivity(intent1);
+                }
+            } else {
+                Toast.makeText(TotalActivity.this, "未找到存储卡，无法存储照片！", Toast.LENGTH_SHORT)
+                        .show();
+            }
+
+        }
+
+        super.onActivityResult(requestCode, resultCode, data);
+    }
+
+
+    private void AlertDialogShow() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(
+                TotalActivity.this);
+        builder.setTitle("选择方式");
+        builder.setPositiveButton("拍照", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.dismiss();
+                Intent intent = new Intent("android.media.action.IMAGE_CAPTURE");
+// 判断存储卡是否可以用，可用进行存储
+                if (hasSdcard()) {
+                    SimpleDateFormat timeStampFormat = new SimpleDateFormat(
+                            "yyyy_MM_dd_HH_mm_ss");
+                    String filename = timeStampFormat.format(new Date());
+                    ContentValues values = new ContentValues();
+                    values.put(MediaStore.Images.Media.TITLE, filename);
+                    photoUri1 = getContentResolver().insert(
+                            MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
+                            values);
+                    intent.putExtra(MediaStore.EXTRA_OUTPUT, photoUri1);
+                }
+                startActivityForResult(intent, PHOTO_REQUEST_CAMERA);
+            }
+        });
+        builder.setNeutralButton("相册", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.dismiss();
+                Intent intent = new Intent(Intent.ACTION_PICK);
+                intent.setType("image/*");
+                startActivityForResult(intent, PHOTO_REQUEST_GALLERY);
+            }
+        });
+        builder.create().show();
+    }
+
+    private boolean hasSdcard() {
+        return Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED);
+    }
+
+
+}
