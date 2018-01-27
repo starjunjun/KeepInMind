@@ -9,6 +9,7 @@ import android.net.Uri;
 import android.os.Environment;
 import android.provider.MediaStore;
 import android.support.design.widget.FloatingActionButton;
+import android.support.design.widget.NavigationView;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
@@ -17,6 +18,7 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
+import android.view.Gravity;
 import android.view.View;
 import android.view.animation.AnticipateInterpolator;
 import android.view.animation.OvershootInterpolator;
@@ -38,12 +40,15 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import de.hdodenhof.circleimageview.CircleImageView;
+
 import static android.os.Environment.getExternalStorageState;
 
 public class TotalActivity extends AppCompatActivity implements View.OnClickListener {
 
     private Toolbar toolbar;
     private android.support.design.widget.FloatingActionButton fab, fab_one, fab_two, fab_three;
+    private CircleImageView icon_image;
 
     private Uri photoUri1;
     private static final int PHOTO_REQUEST_CAMERA = 1;// 拍照
@@ -57,8 +62,14 @@ public class TotalActivity extends AppCompatActivity implements View.OnClickList
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_total);
         LitePal.getDatabase();
-
+        icon_image = (CircleImageView) findViewById(R.id.icon_image);
         final DrawerLayout drawerLayout = (DrawerLayout) findViewById(R.id.drawer);
+        icon_image.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                drawerLayout.openDrawer(Gravity.START);
+            }
+        });
         toolbar = (Toolbar) findViewById(R.id.toolbar);
         if (!(DownFileUtil.CheckExistFile(Environment.getExternalStorageDirectory() + "/Download/tessdata/chi") && DownFileUtil.CheckExistFile(Environment.getExternalStorageDirectory() + "/Download/tessdata/eng"))) {
             Intent intent = new Intent(this, DownloadService.class);
@@ -146,7 +157,6 @@ public class TotalActivity extends AppCompatActivity implements View.OnClickList
                     animationHint(fab_three, -450);
                     isShow = false;
                 }
-//                AlertDialogShow();
                 new PhotoDialog(TotalActivity.this).show();
                 break;
             case R.id.fab_three:
@@ -158,7 +168,6 @@ public class TotalActivity extends AppCompatActivity implements View.OnClickList
                 }
                 Intent intent1 = new Intent(this, SpeechRecognitionActivity.class);
                 startActivity(intent1);
-
             default:
                 if (isShow) {
                     animationHint(fab_one, -150);
@@ -216,42 +225,6 @@ public class TotalActivity extends AppCompatActivity implements View.OnClickList
         super.onActivityResult(requestCode, resultCode, data);
     }
 
-
-    private void AlertDialogShow() {
-        AlertDialog.Builder builder = new AlertDialog.Builder(
-                TotalActivity.this);
-        builder.setTitle("选择方式");
-        builder.setPositiveButton("拍照", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                dialog.dismiss();
-                Intent intent = new Intent("android.media.action.IMAGE_CAPTURE");
-// 判断存储卡是否可以用，可用进行存储
-                if (hasSdcard()) {
-                    SimpleDateFormat timeStampFormat = new SimpleDateFormat(
-                            "yyyy_MM_dd_HH_mm_ss");
-                    String filename = timeStampFormat.format(new Date());
-                    ContentValues values = new ContentValues();
-                    values.put(MediaStore.Images.Media.TITLE, filename);
-                    photoUri1 = getContentResolver().insert(
-                            MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
-                            values);
-                    intent.putExtra(MediaStore.EXTRA_OUTPUT, photoUri1);
-                }
-                startActivityForResult(intent, PHOTO_REQUEST_CAMERA);
-            }
-        });
-        builder.setNeutralButton("相册", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                dialog.dismiss();
-                Intent intent = new Intent(Intent.ACTION_PICK);
-                intent.setType("image/*");
-                startActivityForResult(intent, PHOTO_REQUEST_GALLERY);
-            }
-        });
-        builder.create().show();
-    }
 
     private boolean hasSdcard() {
         return Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED);
