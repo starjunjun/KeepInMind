@@ -29,6 +29,7 @@
             android:id="@+id/passage_img"
             android:layout_width="100dp"
             android:layout_height="80dp"
+            android:transitionName="share"
             android:layout_alignParentEnd="true"
             android:layout_alignParentRight="true"
             android:layout_alignParentTop="true"

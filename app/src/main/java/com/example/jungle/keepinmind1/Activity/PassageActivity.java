@@ -7,8 +7,10 @@ import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
+import android.transition.ChangeBounds;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.Window;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -27,7 +29,6 @@ public class PassageActivity extends BaseActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_passage);
-
         toolbar = (Toolbar) findViewById(R.id.toolbar);
         passage_content = (TextView) findViewById(R.id.passage_content);
         passage_title = (TextView) findViewById(R.id.passage_title);
@@ -44,7 +45,6 @@ public class PassageActivity extends BaseActivity {
         mCollapsingToolbarLayout.setCollapsedTitleTextColor(Color.BLACK);//设置收缩后Toolbar上字体的颜色
         Intent intent =getIntent();
         Glide.with(PassageActivity.this).load(intent.getStringExtra("Img")).into(passage_imageview);
-
         passage_title.setText(intent.getStringExtra("Title"));
         passage_content.setText(intent.getStringExtra("Content").replace(" ","\n"));
 
@@ -54,7 +54,7 @@ public class PassageActivity extends BaseActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case android.R.id.home:
-                finish();
+               finish();
                 overridePendingTransition(R.anim.left_in, R.anim.right_out);
         }
 

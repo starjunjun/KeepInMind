@@ -1,7 +1,9 @@
 package com.example.jungle.keepinmind1.Adapter;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -18,10 +20,6 @@ import com.example.jungle.keepinmind1.R;
 import com.example.jungle.keepinmind1.Utils.DataBaseUtil.DataBaseUtils;
 import com.example.jungle.keepinmind1.Utils.DataBaseUtil.DateExchangeUtil;
 import com.example.jungle.keepinmind1.Utils.DataBaseUtil.MathUtils;
-
-import org.greenrobot.eventbus.EventBus;
-import org.w3c.dom.Text;
-
 import java.text.ParseException;
 import java.util.ArrayList;
 
@@ -98,7 +96,7 @@ public class PassageAdapter extends RecyclerView.Adapter<PassageAdapter.ViewHold
     }
 
     @Override
-    public void onBindViewHolder(PassageAdapter.ViewHolder holder, int position) {
+    public void onBindViewHolder(final PassageAdapter.ViewHolder holder, int position) {
         if (position == 0) {
             year.setText("/" + DateExchangeUtil.stampToYear(System.currentTimeMillis() + ""));
             month.setText(DateExchangeUtil.stampToMonth(System.currentTimeMillis() + ""));
@@ -132,11 +130,10 @@ public class PassageAdapter extends RecyclerView.Adapter<PassageAdapter.ViewHold
                     intent.putExtra("Content",passage.getPassageContent());
                     intent.putExtra("Img",passage.getPassageImg());
                     mContext.startActivity(intent);
+//                    mContext.startActivity(intent,ActivityOptionsCompat.makeSceneTransitionAnimation((Activity) mContext, holder.passage_img, "share").toBundle());
                 }
             });
         }
-
-
     }
 
     @Override
