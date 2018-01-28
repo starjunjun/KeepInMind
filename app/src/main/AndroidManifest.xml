@@ -75,7 +75,8 @@
         <activity android:name=".Activity.PhotoActivity" />
         <activity android:name=".Activity.SpeechRecognitionActivity" />
         <activity android:name=".Activity.AddRecordActivity" />
-        <activity android:name=".Activity.GuPiaoContentActivity"></activity>
+        <activity android:name=".Activity.GuPiaoContentActivity" />
+        <activity android:name=".Activity.PassageActivity"></activity>
     </application>
 
 </manifest>

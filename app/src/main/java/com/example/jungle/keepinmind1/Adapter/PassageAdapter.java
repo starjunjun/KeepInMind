@@ -12,6 +12,7 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.example.jungle.keepinmind1.Activity.AddRecordActivity;
+import com.example.jungle.keepinmind1.Activity.PassageActivity;
 import com.example.jungle.keepinmind1.Bean.ManageMoneyPassage;
 import com.example.jungle.keepinmind1.R;
 import com.example.jungle.keepinmind1.Utils.DataBaseUtil.DataBaseUtils;
@@ -120,9 +121,19 @@ public class PassageAdapter extends RecyclerView.Adapter<PassageAdapter.ViewHold
             monthDateLine.setText(DateExchangeUtil.getMonthStartTime() + " — " + DateExchangeUtil.getTodayTime(System.currentTimeMillis() + ""));
             yearDateLine.setText(DateExchangeUtil.getCurrYearFirst() + " — " + DateExchangeUtil.getTodayTime(System.currentTimeMillis() + ""));
         } else {
-            ManageMoneyPassage passage = passagesList.get(position);
+            final ManageMoneyPassage passage = passagesList.get(position);
             holder.passage_content.setText(passage.getPassageTitle());
             Glide.with(mContext).load(passage.getPassageImg()).into(holder.passage_img);
+            holder.view.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent intent = new Intent(mContext, PassageActivity.class);
+                    intent.putExtra("Title",passage.getPassageTitle());
+                    intent.putExtra("Content",passage.getPassageContent());
+                    intent.putExtra("Img",passage.getPassageImg());
+                    mContext.startActivity(intent);
+                }
+            });
         }
 
 
