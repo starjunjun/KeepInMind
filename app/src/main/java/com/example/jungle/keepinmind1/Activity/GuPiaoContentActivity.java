@@ -1,5 +1,6 @@
 package com.example.jungle.keepinmind1.Activity;
 
+import android.content.Context;
 import android.content.Intent;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
@@ -9,6 +10,10 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.view.inputmethod.InputMethodManager;
+import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.ScrollView;
 import android.widget.TextView;
 
@@ -58,6 +63,9 @@ public class GuPiaoContentActivity extends BaseActivity {
     private TextView content;
     private TextView TotalCapitalStock;
     private TextView FlowOfEquity;
+    private ImageView search_button;
+    private EditText search_et;
+    private ScrollView scroll;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -105,6 +113,22 @@ public class GuPiaoContentActivity extends BaseActivity {
         content= (TextView) findViewById(R.id.content);
         TotalCapitalStock = (TextView) findViewById(R.id.TotalCapitalStock);
         FlowOfEquity = (TextView) findViewById(R.id.FlowOfEquity);
+        search_button = (ImageView) findViewById(R.id.search_button);
+        search_et = (EditText) findViewById(R.id.search_et);
+        scroll = (ScrollView) findViewById(R.id.scroll);
+        search_button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                searchCode = search_et.getText().toString().trim();
+                initGuPiao();
+                InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+                // 隐藏软键盘
+                imm.hideSoftInputFromWindow(getWindow().getDecorView().getWindowToken(), 0);
+
+            }
+        });
+
+
     }
 
     private void initGuPiao() {
@@ -137,6 +161,7 @@ public class GuPiaoContentActivity extends BaseActivity {
                 AssetValuePerShare.setText(rj.getResult().getAssetValuePerShare());
                 FlowOfEquity.setText(rj.getResult().getFlowOfEquity());
                 TotalCapitalStock.setText(rj.getResult().getTotalCapitalStock());
+                scroll.scrollTo(0,0);
             }
 
         @Override

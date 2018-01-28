@@ -28,6 +28,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:scrollbars="none"
+            android:id="@+id/scroll"
             app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
             <LinearLayout
@@ -656,7 +657,7 @@
             android:maxLines="1"/>
 
         <ImageView
-
+            android:clickable="true"
             android:id="@+id/search_button"
             android:layout_width="50dp"
             android:layout_height="50dp"
