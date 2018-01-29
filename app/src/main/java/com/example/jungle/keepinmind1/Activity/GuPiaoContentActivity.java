@@ -14,6 +14,7 @@ import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.ScrollView;
 import android.widget.TextView;
 
@@ -66,6 +67,7 @@ public class GuPiaoContentActivity extends BaseActivity {
     private ImageView search_button;
     private EditText search_et;
     private ScrollView scroll;
+    private ProgressBar pg;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -78,6 +80,8 @@ public class GuPiaoContentActivity extends BaseActivity {
             actionBar.setDisplayHomeAsUpEnabled(true);
             actionBar.setTitle("股票详情");
         }
+        pg = (ProgressBar) findViewById(R.id.pg);
+        pg.setVisibility(View.VISIBLE);
         findId();
         initGuPiao();
 
@@ -119,6 +123,7 @@ public class GuPiaoContentActivity extends BaseActivity {
         search_button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                pg.setVisibility(View.VISIBLE);
                 searchCode = search_et.getText().toString().trim();
                 initGuPiao();
                 InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
@@ -162,6 +167,7 @@ public class GuPiaoContentActivity extends BaseActivity {
                 FlowOfEquity.setText(rj.getResult().getFlowOfEquity());
                 TotalCapitalStock.setText(rj.getResult().getTotalCapitalStock());
                 scroll.scrollTo(0,0);
+                pg.setVisibility(View.GONE);
             }
 
         @Override
