@@ -5,6 +5,7 @@ import android.animation.ObjectAnimator;
 import android.content.ContentValues;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Environment;
 import android.provider.MediaStore;
@@ -32,6 +33,7 @@ import com.example.jungle.keepinmind1.Fragment.DetailBillFragment;
 import com.example.jungle.keepinmind1.Fragment.ManageMoneyFragment;
 import com.example.jungle.keepinmind1.R;
 import com.example.jungle.keepinmind1.Service.DownloadService;
+import com.example.jungle.keepinmind1.Utils.DataBaseUtil.MathUtils;
 import com.example.jungle.keepinmind1.Utils.PublicUtil.DownFileUtil;
 import com.example.jungle.keepinmind1.Utils.PublicUtil.PhotoDialog;
 
@@ -64,6 +66,10 @@ public class TotalActivity extends AppCompatActivity implements View.OnClickList
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.activity_total);
+        //1、获取Preferences
+        SharedPreferences settings = getSharedPreferences("data", 0);
+//2、取出数据
+        MathUtils.budget = settings.getFloat("budget", 0);
         LitePal.getDatabase();
         icon_image = (CircleImageView) findViewById(R.id.icon_image);
         final DrawerLayout drawerLayout = (DrawerLayout) findViewById(R.id.drawer);

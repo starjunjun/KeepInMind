@@ -25,8 +25,8 @@ public class TestMain {
 //        System.out.println(DateExchangeUtil.dateToStamp(DateExchangeUtil.getTodayDate(System.currentTimeMillis())));
 //        System.out.println(System.currentTimeMillis());
 
-        JiJinBean jb =new JiJinBean("-1", "-1", "-1", "-1", "-1", "-1", "-1", "-1");
-        System.out.println(JiJinBean.class.isInstance(jb));
+
+        System.out.println(DateExchangeUtil.getMonthStartDate());
 //        for (int i = 0; i < DateExchangeUtil.allWeekdays().size(); i++) {
 //            System.out.println(DateExchangeUtil.allWeekdays().get(i));
 //        }

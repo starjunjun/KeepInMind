@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/photo_dialog"
+    >
+
+    <TextView
+        android:id="@+id/tv"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_weight="1"
+        android:gravity="center"
+        android:textColor="@color/colorText"
+        android:text="请输入预算" />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="#cccccc" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_weight="1"
+        android:paddingLeft="10dp"
+        android:paddingRight="10dp">
+        <EditText
+            android:id="@+id/ed"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/edtext_dialog"
+            android:textCursorDrawable="@drawable/cursor_color"
+android:textColor="@color/colorText"
+            android:layout_gravity="center"/>
+
+    </LinearLayout>
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="#cccccc" />
+
+    <TextView
+        android:id="@+id/bt"
+        android:text="确定"
+        android:gravity="center"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_weight="1"
+        android:textColor="@color/colorText"
+        android:clickable="true"
+        />
+
+
+
+</LinearLayout>

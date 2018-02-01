@@ -1,4 +1,4 @@
-package com.example.jungle.keepinmind1.Utils;
+package com.example.jungle.keepinmind1.Utils.PublicUtil;
 
 import android.content.Context;
 import android.graphics.Canvas;
@@ -82,7 +82,7 @@ public class ProgressBottle extends View {
         double percent = current / total;
         int green = 222 - (int) (122 * percent);
         int red = 100+(int) (155 * percent);
-        mPaint.setARGB(255, red, green, 100);
+        mPaint.setARGB(120, red, green, 100);
         mPaint.setAntiAlias(true);
         mPaint.setStyle(Paint.Style.FILL);
         r2.left = 1;

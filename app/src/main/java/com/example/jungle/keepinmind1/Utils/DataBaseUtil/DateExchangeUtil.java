@@ -166,12 +166,13 @@ public class DateExchangeUtil {
      * 年-月-日 时：分：秒
      */
     public static String getMonthStartDate() {
-        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd ");
         //获取当前月第一天：
         Calendar c = Calendar.getInstance();
         c.add(Calendar.MONTH, 0);
         c.set(Calendar.DAY_OF_MONTH, 1);//设置为1号,当前日期既为本月第一天
         String first = format.format(c.getTime());
+        first = first+"00:00:00";
         return first;
     }
 

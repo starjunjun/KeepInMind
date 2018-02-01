@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.app.Application;
 import android.content.Context;
 import android.content.Intent;
+import android.text.StaticLayout;
 
 import java.util.LinkedList;
 import java.util.List;

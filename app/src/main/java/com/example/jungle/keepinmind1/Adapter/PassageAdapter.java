@@ -3,14 +3,13 @@ package com.example.jungle.keepinmind1.Adapter;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Color;
-import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
@@ -21,7 +20,8 @@ import com.example.jungle.keepinmind1.R;
 import com.example.jungle.keepinmind1.Utils.DataBaseUtil.DataBaseUtils;
 import com.example.jungle.keepinmind1.Utils.DataBaseUtil.DateExchangeUtil;
 import com.example.jungle.keepinmind1.Utils.DataBaseUtil.MathUtils;
-import com.example.jungle.keepinmind1.Utils.ProgressBottle;
+import com.example.jungle.keepinmind1.Utils.PublicUtil.BudgetDialog;
+import com.example.jungle.keepinmind1.Utils.PublicUtil.ProgressBottle;
 
 import java.text.ParseException;
 import java.util.ArrayList;
@@ -54,6 +54,7 @@ public class PassageAdapter extends RecyclerView.Adapter<PassageAdapter.ViewHold
     private TextView yearAdd;
     private TextView yearDecrease;
     private ProgressBottle pb;
+    private LinearLayout linearLayout2;
 
     public PassageAdapter(Context context, ArrayList<ManageMoneyPassage> list) {
         mContext = context;
@@ -92,12 +93,9 @@ public class PassageAdapter extends RecyclerView.Adapter<PassageAdapter.ViewHold
             yearAdd = (TextView) view.findViewById(R.id.year_add);
             yearDecrease = (TextView) view.findViewById(R.id.year_decrease);
             pb= (ProgressBottle) view.findViewById(R.id.pb);
-            pb.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    pb.set(90,100);
-                }
-            });
+
+            linearLayout2 = (LinearLayout) view.findViewById(R.id.linearLayout2);
+
 
         } else {
             view = LayoutInflater.from(parent.getContext()).inflate(R.layout.passage_item, parent, false);
@@ -113,8 +111,9 @@ public class PassageAdapter extends RecyclerView.Adapter<PassageAdapter.ViewHold
             year.setText("/" + DateExchangeUtil.stampToYear(System.currentTimeMillis() + ""));
             month.setText(DateExchangeUtil.stampToMonth(System.currentTimeMillis() + ""));
             try {
-                monthIn.setText("$" + MathUtils.format(DataBaseUtils.sumMoney(DataBaseUtils.queryUseType(DateExchangeUtil.dateToStamp(DateExchangeUtil.getMonthStartDate()), System.currentTimeMillis() + "", "in"))) + "元");
-                monthOut.setText("$" + MathUtils.format(DataBaseUtils.sumMoney(DataBaseUtils.queryUseType(DateExchangeUtil.dateToStamp(DateExchangeUtil.getMonthStartDate()), System.currentTimeMillis() + "", "out"))) + "元");
+                monthUse.setText("￥"+MathUtils.budget);
+                monthIn.setText("￥" + MathUtils.format(DataBaseUtils.sumMoney(DataBaseUtils.queryUseType(DateExchangeUtil.dateToStamp(DateExchangeUtil.getMonthStartDate()), System.currentTimeMillis() + "", "in"))) + "元");
+                monthOut.setText("￥" + MathUtils.format(DataBaseUtils.sumMoney(DataBaseUtils.queryUseType(DateExchangeUtil.dateToStamp(DateExchangeUtil.getMonthStartDate()), System.currentTimeMillis() + "", "out"))) + "元");
                 todayAdd.setText(MathUtils.format(DataBaseUtils.sumMoney(DataBaseUtils.queryUseType(DateExchangeUtil.dateToStamp(DateExchangeUtil.getTodayDate(System.currentTimeMillis())), System.currentTimeMillis() + "", "in"))) + "");
                 todayDecrease.setText(MathUtils.format(DataBaseUtils.sumMoney(DataBaseUtils.queryUseType(DateExchangeUtil.dateToStamp(DateExchangeUtil.getTodayDate(System.currentTimeMillis())), System.currentTimeMillis() + "", "out"))) + "");
                 weekAdd.setText(MathUtils.format(DataBaseUtils.sumMoney(DataBaseUtils.queryUseType(DateExchangeUtil.dateToStamp(DateExchangeUtil.getWeekStartDate()), System.currentTimeMillis() + "", "in"))) + "");
@@ -123,6 +122,23 @@ public class PassageAdapter extends RecyclerView.Adapter<PassageAdapter.ViewHold
                 monthDecrease.setText(MathUtils.format(DataBaseUtils.sumMoney(DataBaseUtils.queryUseType(DateExchangeUtil.dateToStamp(DateExchangeUtil.getMonthStartDate()), System.currentTimeMillis() + "", "out"))) + "");
                 yearAdd.setText(MathUtils.format(DataBaseUtils.sumMoney(DataBaseUtils.queryUseType(DateExchangeUtil.dateToStamp(DateExchangeUtil.getYearFirstDate(Integer.parseInt(DateExchangeUtil.stampToYear(System.currentTimeMillis() + "")))), System.currentTimeMillis() + "", "in"))) + "");
                 yearDecrease.setText(MathUtils.format(DataBaseUtils.sumMoney(DataBaseUtils.queryUseType(DateExchangeUtil.dateToStamp(DateExchangeUtil.getYearFirstDate(Integer.parseInt(DateExchangeUtil.stampToYear(System.currentTimeMillis() + "")))), System.currentTimeMillis() + "", "out"))) + "");
+                linearLayout2.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        new BudgetDialog((Activity) mContext).show();
+                    }
+                });
+                pb.set(MathUtils.format(DataBaseUtils.sumMoney(DataBaseUtils.queryUseType(DateExchangeUtil.dateToStamp(DateExchangeUtil.getMonthStartDate()), System.currentTimeMillis() + "", "out"))),MathUtils.budget);
+                pb.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        try {
+                            pb.set(MathUtils.format(DataBaseUtils.sumMoney(DataBaseUtils.queryUseType(DateExchangeUtil.dateToStamp(DateExchangeUtil.getMonthStartDate()), System.currentTimeMillis() + "", "out"))),MathUtils.budget);
+                        } catch (ParseException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                });
             } catch (ParseException e) {
                 e.printStackTrace();
             }
