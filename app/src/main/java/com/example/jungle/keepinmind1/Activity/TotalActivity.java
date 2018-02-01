@@ -21,6 +21,8 @@ import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.transition.ChangeBounds;
 import android.view.Gravity;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.Window;
 import android.view.animation.AnticipateInterpolator;
@@ -53,11 +55,11 @@ public class TotalActivity extends AppCompatActivity implements View.OnClickList
     private Toolbar toolbar;
     private android.support.design.widget.FloatingActionButton fab, fab_one, fab_two, fab_three;
     private CircleImageView icon_image;
-
+    private NavigationView nav_view;
     private Uri photoUri1;
     private static final int PHOTO_REQUEST_CAMERA = 1;// 拍照
     private static final int PHOTO_REQUEST_GALLERY = 2;// 从相册中选择
-
+private DrawerLayout drawerLayout;
     private boolean isShow = false;
 
 
@@ -72,7 +74,7 @@ public class TotalActivity extends AppCompatActivity implements View.OnClickList
         MathUtils.budget = settings.getFloat("budget", 0);
         LitePal.getDatabase();
         icon_image = (CircleImageView) findViewById(R.id.icon_image);
-        final DrawerLayout drawerLayout = (DrawerLayout) findViewById(R.id.drawer);
+        drawerLayout = (DrawerLayout) findViewById(R.id.drawer);
         icon_image.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -80,6 +82,8 @@ public class TotalActivity extends AppCompatActivity implements View.OnClickList
             }
         });
         toolbar = (Toolbar) findViewById(R.id.toolbar);
+        nav_view = (NavigationView) findViewById(R.id.nav_view);
+        nav_view.setItemIconTintList(null);
         if (!(DownFileUtil.CheckExistFile(Environment.getExternalStorageDirectory() + "/Download/tessdata/chi") && DownFileUtil.CheckExistFile(Environment.getExternalStorageDirectory() + "/Download/tessdata/eng"))) {
             Intent intent = new Intent(this, DownloadService.class);
             startService(intent);
@@ -240,4 +244,46 @@ public class TotalActivity extends AppCompatActivity implements View.OnClickList
     }
 
 
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.inOut:
+                Intent intent = new Intent(this, ChartActivity.class);
+                startActivity(intent);
+                drawerLayout.closeDrawers();
+                break;
+            case R.id.ocr:
+                drawerLayout.closeDrawers();
+                new PhotoDialog(TotalActivity.this).show();
+                break;
+            case R.id.uploadBook:
+                drawerLayout.closeDrawers();
+                break;
+            case R.id.voice:
+                drawerLayout.closeDrawers();
+                Intent intent1 = new Intent(this, SpeechRecognitionActivity.class);
+                startActivity(intent1);
+                break;
+            case R.id.settings:
+                drawerLayout.closeDrawers();
+                break;
+            case R.id.clearCache:
+                drawerLayout.closeDrawers();
+                break;
+            case R.id.signOut:
+                drawerLayout.closeDrawers();
+                break;
+            default:
+                break;
+        }
+
+        return true;
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+
+        return true;
+    }
 }
