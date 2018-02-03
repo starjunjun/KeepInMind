@@ -64,7 +64,7 @@
                     android:layout_alignRight="@+id/textView2"
                     android:layout_below="@+id/textView2"
                     android:layout_marginTop="37dp"
-                    android:text="-9.00" />
+                    android:text="0.00" />
 
                 <TextView
                     android:id="@+id/textView3"

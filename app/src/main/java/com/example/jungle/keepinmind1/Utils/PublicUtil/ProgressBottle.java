@@ -91,8 +91,6 @@ public class ProgressBottle extends View {
         r2.top = (float) (current / total * height);
         if (current < target || current == 0) {
             current = current + step;
-            Log.i(TAG, "run: " + current);
-
         }
         canvas.drawRoundRect(r2, 10, 10, mPaint);
         invalidate();

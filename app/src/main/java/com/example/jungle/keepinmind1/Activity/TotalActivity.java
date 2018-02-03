@@ -20,6 +20,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.transition.ChangeBounds;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -36,17 +37,21 @@ import com.example.jungle.keepinmind1.Fragment.ManageMoneyFragment;
 import com.example.jungle.keepinmind1.R;
 import com.example.jungle.keepinmind1.Service.DownloadService;
 import com.example.jungle.keepinmind1.Utils.DataBaseUtil.MathUtils;
+import com.example.jungle.keepinmind1.Utils.PublicUtil.DatabaseDump;
 import com.example.jungle.keepinmind1.Utils.PublicUtil.DownFileUtil;
 import com.example.jungle.keepinmind1.Utils.PublicUtil.PhotoDialog;
 
 import org.litepal.LitePal;
+import org.litepal.crud.DataSupport;
 
+import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
 import de.hdodenhof.circleimageview.CircleImageView;
+import jxl.read.biff.BiffException;
 
 import static android.os.Environment.getExternalStorageState;
 
@@ -258,7 +263,20 @@ private DrawerLayout drawerLayout;
                 new PhotoDialog(TotalActivity.this).show();
                 break;
             case R.id.uploadBook:
+                DatabaseDump db = new DatabaseDump(LitePal.getDatabase(),"/sdcard/export.xml");
+                db.writeExcel("managemoneydbbean");
                 drawerLayout.closeDrawers();
+                break;
+            case R.id.InBook:
+                DataSupport.deleteAll("managemoneydbbean");
+                DatabaseDump db1 = new DatabaseDump(LitePal.getDatabase(),"/sdcard/export.xml");
+                try {
+                    db1.readExcel("/sdcard/managemoneydbbean.xls");
+                } catch (IOException e) {
+                    e.printStackTrace();
+                } catch (BiffException e) {
+                    e.printStackTrace();
+                }
                 break;
             case R.id.voice:
                 drawerLayout.closeDrawers();

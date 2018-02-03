@@ -1,7 +1,12 @@
 package com.example.jungle.keepinmind1.Utils;
 
+import android.database.sqlite.SQLiteDatabase;
+
 import com.example.jungle.keepinmind1.Bean.JiJinBean;
 import com.example.jungle.keepinmind1.Utils.DataBaseUtil.DateExchangeUtil;
+import com.example.jungle.keepinmind1.Utils.PublicUtil.DatabaseDump;
+
+import org.litepal.LitePal;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -21,15 +26,8 @@ public class TestMain {
     public static void main(String[] args) throws ParseException {
 
 
-//        System.out.println(DateExchangeUtil.dateToStamp(DateExchangeUtil.getMonthStartDate()));
-//        System.out.println(DateExchangeUtil.dateToStamp(DateExchangeUtil.getTodayDate(System.currentTimeMillis())));
-//        System.out.println(System.currentTimeMillis());
-
-
-        System.out.println(DateExchangeUtil.getMonthStartDate());
-//        for (int i = 0; i < DateExchangeUtil.allWeekdays().size(); i++) {
-//            System.out.println(DateExchangeUtil.allWeekdays().get(i));
-//        }
+      DatabaseDump db = new DatabaseDump(LitePal.getDatabase(),"/sdcard/export.xml");
+        db.writeExcel("managemoneydbbean");
 
     }
 

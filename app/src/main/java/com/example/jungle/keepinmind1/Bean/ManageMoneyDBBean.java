@@ -15,6 +15,9 @@ public class ManageMoneyDBBean extends DataSupport {
     private long time;
     private String classification;
 
+    public ManageMoneyDBBean() {
+    }
+
     public ManageMoneyDBBean(Double money, String account, String type, String remarks, long time, String classification) {
         this.money = money;
         this.account = account;

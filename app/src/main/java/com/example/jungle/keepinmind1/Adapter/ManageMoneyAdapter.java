@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.support.design.widget.TabItem;
 import android.support.design.widget.TabLayout;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -15,12 +16,20 @@ import android.widget.TextView;
 import com.example.jungle.keepinmind1.Activity.GuPiaoContentActivity;
 import com.example.jungle.keepinmind1.Bean.GuPiaoBean;
 import com.example.jungle.keepinmind1.Bean.JiJinBean;
+import com.example.jungle.keepinmind1.Bean.ManageMoneyPassage;
+import com.example.jungle.keepinmind1.Bean.RetrunJson;
 import com.example.jungle.keepinmind1.R;
+import com.example.jungle.keepinmind1.Utils.PublicUtil.RecycleViewDivider;
+import com.example.jungle.keepinmind1.Utils.RetrofitUtil.HttpResultSubscriber;
+import com.example.jungle.keepinmind1.Utils.RetrofitUtil.MyService;
+import com.example.jungle.keepinmind1.Utils.RetrofitUtil.NetRequestFactory;
+import com.example.jungle.keepinmind1.Utils.RetrofitUtil.Transform;
 import com.jude.rollviewpager.RollPagerView;
 import com.jude.rollviewpager.hintview.ColorPointHintView;
 
 import org.greenrobot.eventbus.EventBus;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import static android.support.design.widget.TabLayout.*;
@@ -38,6 +47,7 @@ public class ManageMoneyAdapter extends RecyclerView.Adapter<ManageMoneyAdapter.
     private Context mContext;
     private boolean isJiJin;  //true代表基金，false代表股票
     private TabLayout tabLayout;
+    private List<ManageMoneyPassage> list;
 
     public ManageMoneyAdapter(List list, Context context, boolean isJiJin) {
         mList = list;
@@ -50,15 +60,30 @@ public class ManageMoneyAdapter extends RecyclerView.Adapter<ManageMoneyAdapter.
         View view;
         isJiJin = JiJinBean.class.isInstance(mList.get(0));
         if (viewType == TYPE_HEADER) {
+            list = new ArrayList<>();
             view = LayoutInflater.from(parent.getContext()).inflate(R.layout.managemoney_header, parent, false);
             mRollViewPager = (RollPagerView) view.findViewById(R.id.roll_view_pager);
 
-            //设置播放时间间隔
-            mRollViewPager.setPlayDelay(1000);
-            //设置透明度
-            mRollViewPager.setAnimationDurtion(500);
-            //设置适配器
-            mRollViewPager.setAdapter(new RollViewAdapter());
+            NetRequestFactory.getInstance().createService(MyService.class).getAd().compose(Transform.<RetrunJson<List<ManageMoneyPassage>>>defaultSchedulers()).subscribe(new HttpResultSubscriber<RetrunJson<List<ManageMoneyPassage>>>() {
+                @Override
+                public void onSuccess(RetrunJson<List<ManageMoneyPassage>> rj) {
+                    //设置播放时间间隔
+                    mRollViewPager.setPlayDelay(3000);
+                    //设置透明度
+                    mRollViewPager.setAnimationDurtion(2000);
+                    list.addAll((ArrayList<ManageMoneyPassage>) rj.getResult());
+                    mRollViewPager.setAdapter(new RollViewAdapter(list,mContext));
+                    mRollViewPager.setHintView(new ColorPointHintView(mContext, Color.YELLOW, Color.WHITE));
+                }
+
+                @Override
+                public void _onError(RetrunJson<List<ManageMoneyPassage>> rj) {
+
+                }
+
+            });
+
+
 
             //设置指示器（顺序依次）
             //自定义指示器图片
@@ -66,7 +91,7 @@ public class ManageMoneyAdapter extends RecyclerView.Adapter<ManageMoneyAdapter.
             //设置文字指示器
             //隐藏指示器
             //mRollViewPager.setHintView(new IconHintView(this, R.drawable.point_focus, R.drawable.point_normal));
-            mRollViewPager.setHintView(new ColorPointHintView(mContext, Color.YELLOW, Color.WHITE));
+
             //mRollViewPager.setHintView(new TextHintView(this));
             //mRollViewPager.setHintView(null);
             tabLayout = (TabLayout) view.findViewById(R.id.tabLayout);

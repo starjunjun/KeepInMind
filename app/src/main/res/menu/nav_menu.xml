@@ -14,9 +14,13 @@
     <item
         android:id="@+id/uploadBook"
         android:icon="@drawable/upload"
-        android:title="上传账本"
+        android:title="导出账本"
         app:showAsAction="never" />
-
+    <item
+        android:id="@+id/InBook"
+        android:icon="@drawable/inbook"
+        android:title="导入账本"
+        app:showAsAction="never" />
     <item
         android:id="@+id/voice"
         android:icon="@drawable/voice1"

@@ -25,6 +25,7 @@ public class AccountFragment extends Fragment {
     private String currentTime;
     private String startTime;
 
+    private TextView net_assets;
     private TextView cash;
     private TextView cashTotal;
     private TextView financeCardMoney;
@@ -44,6 +45,8 @@ public class AccountFragment extends Fragment {
     private TextView investmentMoney;
     private TextView investmentMoney1;
     private TextView investmentMoney2;
+    private TextView liabilities;
+    private TextView assets;
 
     public AccountFragment() {
         // Required empty public constructor
@@ -61,6 +64,9 @@ public class AccountFragment extends Fragment {
         } catch (ParseException e) {
             e.printStackTrace();
         }
+        assets = (TextView) view.findViewById(R.id.assets);
+        net_assets = (TextView) view.findViewById(R.id.net_assets);
+        liabilities = (TextView) view.findViewById(R.id.liabilities);
         cash = (TextView) view.findViewById(R.id.cash);
         cash.setText(MathUtils.format(DataBaseUtils.sumMoneyInAndOut(DataBaseUtils.queryUseAccount(startTime, currentTime, "现金(CNY)"))) + "");
         cashTotal = (TextView) view.findViewById(R.id.cash_total);
@@ -99,6 +105,9 @@ public class AccountFragment extends Fragment {
         investmentMoney1.setText(MathUtils.format(DataBaseUtils.sumMoneyInAndOut(DataBaseUtils.queryUseAccount(startTime, currentTime, "余额宝(CNY)"))) + "");
         investmentMoney2.setText(MathUtils.format(DataBaseUtils.sumMoneyInAndOut(DataBaseUtils.queryUseAccount(startTime, currentTime, "股票账户(CNY)"))) + "");
         investmentTotal.setText(Double.parseDouble(investmentMoney.getText().toString()) + Double.parseDouble(investmentMoney1.getText().toString()) + Double.parseDouble(investmentMoney2.getText().toString()) + "");
+        liabilities.setText("-"+creditTotal.getText());
+        assets.setText(Double.parseDouble(cashTotal.getText().toString().trim())+Double.parseDouble(financeTotal.getText().toString())+Double.parseDouble(fictitiousTotal.getText().toString())+"");
+        net_assets.setText(Double.parseDouble(assets.getText().toString())+Double.parseDouble(liabilities.getText().toString())+"");
         return view;
     }
 
