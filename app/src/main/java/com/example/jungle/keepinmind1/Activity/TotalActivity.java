@@ -9,6 +9,7 @@ import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Environment;
 import android.provider.MediaStore;
+import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.TabLayout;
@@ -64,7 +65,7 @@ public class TotalActivity extends AppCompatActivity implements View.OnClickList
     private Uri photoUri1;
     private static final int PHOTO_REQUEST_CAMERA = 1;// 拍照
     private static final int PHOTO_REQUEST_GALLERY = 2;// 从相册中选择
-private DrawerLayout drawerLayout;
+    private DrawerLayout drawerLayout;
     private boolean isShow = false;
 
 
@@ -75,7 +76,7 @@ private DrawerLayout drawerLayout;
         setContentView(R.layout.activity_total);
         //1、获取Preferences
         SharedPreferences settings = getSharedPreferences("data", 0);
-//2、取出数据
+        //2、取出数据
         MathUtils.budget = settings.getFloat("budget", 0);
         LitePal.getDatabase();
         icon_image = (CircleImageView) findViewById(R.id.icon_image);
@@ -89,6 +90,56 @@ private DrawerLayout drawerLayout;
         toolbar = (Toolbar) findViewById(R.id.toolbar);
         nav_view = (NavigationView) findViewById(R.id.nav_view);
         nav_view.setItemIconTintList(null);
+        nav_view.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
+            @Override
+            public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+                switch (item.getItemId()) {
+                    case R.id.inOut:
+                        Intent intent = new Intent(TotalActivity.this, ChartActivity.class);
+                        startActivity(intent);
+                        drawerLayout.closeDrawers();
+                        break;
+                    case R.id.ocr:
+                        drawerLayout.closeDrawers();
+                        new PhotoDialog(TotalActivity.this).show();
+                        break;
+                    case R.id.uploadBook:
+                        DatabaseDump db = new DatabaseDump(LitePal.getDatabase(), "/sdcard/export.xml");
+                        db.writeExcel("managemoneydbbean");
+                        drawerLayout.closeDrawers();
+                        break;
+                    case R.id.InBook:
+                        drawerLayout.closeDrawers();
+                        DataSupport.deleteAll("managemoneydbbean");
+                        DatabaseDump db1 = new DatabaseDump(LitePal.getDatabase(), "/sdcard/export.xml");
+                        try {
+                            db1.readExcel("/sdcard/managemoneydbbean.xls");
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        } catch (BiffException e) {
+                            e.printStackTrace();
+                        }
+                        break;
+                    case R.id.voice:
+                        drawerLayout.closeDrawers();
+                        Intent intent1 = new Intent(TotalActivity.this, SpeechRecognitionActivity.class);
+                        startActivity(intent1);
+                        break;
+                    case R.id.settings:
+                        drawerLayout.closeDrawers();
+                        break;
+                    case R.id.clearCache:
+                        drawerLayout.closeDrawers();
+                        break;
+                    case R.id.signOut:
+                        drawerLayout.closeDrawers();
+                        break;
+                    default:
+                        break;
+                }
+                return true;
+            }
+        });
         if (!(DownFileUtil.CheckExistFile(Environment.getExternalStorageDirectory() + "/Download/tessdata/chi") && DownFileUtil.CheckExistFile(Environment.getExternalStorageDirectory() + "/Download/tessdata/eng"))) {
             Intent intent = new Intent(this, DownloadService.class);
             startService(intent);
@@ -246,57 +297,6 @@ private DrawerLayout drawerLayout;
 
     private boolean hasSdcard() {
         return Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED);
-    }
-
-
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case R.id.inOut:
-                Intent intent = new Intent(this, ChartActivity.class);
-                startActivity(intent);
-                drawerLayout.closeDrawers();
-                break;
-            case R.id.ocr:
-                drawerLayout.closeDrawers();
-                new PhotoDialog(TotalActivity.this).show();
-                break;
-            case R.id.uploadBook:
-                DatabaseDump db = new DatabaseDump(LitePal.getDatabase(),"/sdcard/export.xml");
-                db.writeExcel("managemoneydbbean");
-                drawerLayout.closeDrawers();
-                break;
-            case R.id.InBook:
-                DataSupport.deleteAll("managemoneydbbean");
-                DatabaseDump db1 = new DatabaseDump(LitePal.getDatabase(),"/sdcard/export.xml");
-                try {
-                    db1.readExcel("/sdcard/managemoneydbbean.xls");
-                } catch (IOException e) {
-                    e.printStackTrace();
-                } catch (BiffException e) {
-                    e.printStackTrace();
-                }
-                break;
-            case R.id.voice:
-                drawerLayout.closeDrawers();
-                Intent intent1 = new Intent(this, SpeechRecognitionActivity.class);
-                startActivity(intent1);
-                break;
-            case R.id.settings:
-                drawerLayout.closeDrawers();
-                break;
-            case R.id.clearCache:
-                drawerLayout.closeDrawers();
-                break;
-            case R.id.signOut:
-                drawerLayout.closeDrawers();
-                break;
-            default:
-                break;
-        }
-
-        return true;
     }
 
     @Override
