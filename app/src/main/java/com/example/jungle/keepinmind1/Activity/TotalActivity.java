@@ -41,7 +41,10 @@ import com.example.jungle.keepinmind1.Utils.DataBaseUtil.MathUtils;
 import com.example.jungle.keepinmind1.Utils.PublicUtil.DatabaseDump;
 import com.example.jungle.keepinmind1.Utils.PublicUtil.DownFileUtil;
 import com.example.jungle.keepinmind1.Utils.PublicUtil.PhotoDialog;
+import com.leon.lfilepickerlibrary.LFilePicker;
+import com.leon.lfilepickerlibrary.utils.Constant;
 
+import org.greenrobot.eventbus.EventBus;
 import org.litepal.LitePal;
 import org.litepal.crud.DataSupport;
 
@@ -57,6 +60,7 @@ import jxl.read.biff.BiffException;
 import static android.os.Environment.getExternalStorageState;
 
 public class TotalActivity extends AppCompatActivity implements View.OnClickListener {
+    int REQUESTCODE_FROM_ACTIVITY = 1000;
 
     private Toolbar toolbar;
     private android.support.design.widget.FloatingActionButton fab, fab_one, fab_two, fab_three;
@@ -110,15 +114,17 @@ public class TotalActivity extends AppCompatActivity implements View.OnClickList
                         break;
                     case R.id.InBook:
                         drawerLayout.closeDrawers();
-                        DataSupport.deleteAll("managemoneydbbean");
-                        DatabaseDump db1 = new DatabaseDump(LitePal.getDatabase(), "/sdcard/export.xml");
-                        try {
-                            db1.readExcel("/sdcard/managemoneydbbean.xls");
-                        } catch (IOException e) {
-                            e.printStackTrace();
-                        } catch (BiffException e) {
-                            e.printStackTrace();
-                        }
+                        new LFilePicker()
+                                .withActivity(TotalActivity.this)
+                                .withRequestCode(REQUESTCODE_FROM_ACTIVITY)
+                                .withTitle("选择导入的文件")
+                                .withMutilyMode(false)
+                                .withFileFilter(new String[]{ ".xls"})
+                                .withBackIcon(Constant.BACKICON_STYLETHREE)
+                                .withBackgroundColor("#FFFFFF")
+                                .withTitleColor("#000000")
+                                .start();
+
                         break;
                     case R.id.voice:
                         drawerLayout.closeDrawers();
@@ -292,6 +298,22 @@ public class TotalActivity extends AppCompatActivity implements View.OnClickList
         }
 
         super.onActivityResult(requestCode, resultCode, data);
+        if (resultCode == RESULT_OK) {
+            if (requestCode == REQUESTCODE_FROM_ACTIVITY) {
+                List<String> list = data.getStringArrayListExtra(Constant.RESULT_INFO);
+                Toast.makeText(getApplicationContext(),"导入成功" , Toast.LENGTH_SHORT).show();
+                DataSupport.deleteAll("managemoneydbbean");
+                DatabaseDump db1 = new DatabaseDump(LitePal.getDatabase(), "/sdcard/export.xml");
+                try {
+                    db1.readExcel(list.get(0).toString());
+                    EventBus.getDefault().post("total");
+                } catch (IOException e) {
+                    e.printStackTrace();
+                } catch (BiffException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
     }
 
 
