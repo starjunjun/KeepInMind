@@ -19,6 +19,7 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.Toolbar;
 import android.transition.ChangeBounds;
 import android.util.Log;
@@ -31,7 +32,10 @@ import android.view.animation.AnticipateInterpolator;
 import android.view.animation.OvershootInterpolator;
 import android.widget.Toast;
 
+import com.example.jungle.keepinmind1.Adapter.PassageAdapter;
 import com.example.jungle.keepinmind1.Adapter.ViewPagerAdapter;
+import com.example.jungle.keepinmind1.Bean.ManageMoneyPassage;
+import com.example.jungle.keepinmind1.Bean.RetrunJson;
 import com.example.jungle.keepinmind1.Fragment.AccountFragment;
 import com.example.jungle.keepinmind1.Fragment.DetailBillFragment;
 import com.example.jungle.keepinmind1.Fragment.ManageMoneyFragment;
@@ -41,6 +45,11 @@ import com.example.jungle.keepinmind1.Utils.DataBaseUtil.MathUtils;
 import com.example.jungle.keepinmind1.Utils.PublicUtil.DatabaseDump;
 import com.example.jungle.keepinmind1.Utils.PublicUtil.DownFileUtil;
 import com.example.jungle.keepinmind1.Utils.PublicUtil.PhotoDialog;
+import com.example.jungle.keepinmind1.Utils.PublicUtil.RecycleViewDivider;
+import com.example.jungle.keepinmind1.Utils.RetrofitUtil.HttpResultSubscriber;
+import com.example.jungle.keepinmind1.Utils.RetrofitUtil.MyService;
+import com.example.jungle.keepinmind1.Utils.RetrofitUtil.NetRequestFactory;
+import com.example.jungle.keepinmind1.Utils.RetrofitUtil.Transform;
 import com.leon.lfilepickerlibrary.LFilePicker;
 import com.leon.lfilepickerlibrary.utils.Constant;
 
@@ -48,6 +57,7 @@ import org.greenrobot.eventbus.EventBus;
 import org.litepal.LitePal;
 import org.litepal.crud.DataSupport;
 
+import java.io.File;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -56,12 +66,14 @@ import java.util.List;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 import jxl.read.biff.BiffException;
+import okhttp3.MediaType;
+import okhttp3.MultipartBody;
+import okhttp3.RequestBody;
 
 import static android.os.Environment.getExternalStorageState;
 
 public class TotalActivity extends AppCompatActivity implements View.OnClickListener {
-    int REQUESTCODE_FROM_ACTIVITY = 1000;
-
+    private int REQUESTCODE_FROM_ACTIVITY = 1000;
     private Toolbar toolbar;
     private android.support.design.widget.FloatingActionButton fab, fab_one, fab_two, fab_three;
     private CircleImageView icon_image;
@@ -71,6 +83,7 @@ public class TotalActivity extends AppCompatActivity implements View.OnClickList
     private static final int PHOTO_REQUEST_GALLERY = 2;// 从相册中选择
     private DrawerLayout drawerLayout;
     private boolean isShow = false;
+    private int fab_height;
 
 
     @Override
@@ -152,6 +165,32 @@ public class TotalActivity extends AppCompatActivity implements View.OnClickList
         }
         initViewPager();
         initView();
+        String FName = Environment.getExternalStorageDirectory() + "/managemoneydbbean.xls";
+
+        File file1 = new File(FName);
+        // create RequestBody instance from file
+        RequestBody description =
+                RequestBody.create(MediaType.parse("multipart/form-data"), file1);
+        RequestBody username =
+                RequestBody.create(MediaType.parse("multipart/form-data"),"123.xls");
+
+        // MultipartBody.Part is used to send also the actual file name
+        MultipartBody.Part file =
+                MultipartBody.Part.createFormData("file", file1.getName(), description);
+
+
+        NetRequestFactory.getInstance().createService(MyService.class).upload(username,file).compose(Transform.<RetrunJson<String>>defaultSchedulers()).subscribe(new HttpResultSubscriber<RetrunJson<String>>() {
+            @Override
+            public void onSuccess(RetrunJson<String> rj) {
+                System.out.println(rj.getResult().toString());
+            }
+
+            @Override
+            public void _onError(RetrunJson<String> rj) {
+
+            }
+
+        });
 
     }
 
@@ -201,25 +240,31 @@ public class TotalActivity extends AppCompatActivity implements View.OnClickList
 
     @Override
     public void onClick(View v) {
+        v.measure(View.MeasureSpec.UNSPECIFIED, View.MeasureSpec.UNSPECIFIED);
+        int height = v.getMeasuredHeight();
+//        int space = getResources().getDimensionPixelOffset(R.dimen.dp_10);
+        fab_height = fab_one.getMeasuredHeight();
+        System.out.println(fab_height);
+        int totalD = -height;
         switch (v.getId()) {
             case R.id.fab:
                 if (!isShow) {
-                    animationShow(fab_one, -150);
-                    animationShow(fab_two, -300);
-                    animationShow(fab_three, -450);
+                    animationShow(fab_one, totalD);
+                    animationShow(fab_two, 2*totalD);
+                    animationShow(fab_three, 3*totalD);
                     isShow = true;
                 } else {
-                    animationHint(fab_one, -150);
-                    animationHint(fab_two, -300);
-                    animationHint(fab_three, -450);
+                    animationHint(fab_one, totalD);
+                    animationHint(fab_two, 2*totalD);
+                    animationHint(fab_three, 3*totalD);
                     isShow = false;
                 }
                 break;
             case R.id.fab_one:
                 if (isShow) {
-                    animationHint(fab_one, -150);
-                    animationHint(fab_two, -300);
-                    animationHint(fab_three, -450);
+                    animationHint(fab_one, totalD);
+                    animationHint(fab_two, 2*totalD);
+                    animationHint(fab_three, 3*totalD);
                     isShow = false;
                 }
                 Intent intent = new Intent(this, ChartActivity.class);
@@ -227,27 +272,27 @@ public class TotalActivity extends AppCompatActivity implements View.OnClickList
                 break;
             case R.id.fab_two:
                 if (isShow) {
-                    animationHint(fab_one, -150);
-                    animationHint(fab_two, -300);
-                    animationHint(fab_three, -450);
+                    animationHint(fab_one, totalD);
+                    animationHint(fab_two, 2*totalD);
+                    animationHint(fab_three, 3*totalD);
                     isShow = false;
                 }
                 new PhotoDialog(TotalActivity.this).show();
                 break;
             case R.id.fab_three:
                 if (isShow) {
-                    animationHint(fab_one, -150);
-                    animationHint(fab_two, -300);
-                    animationHint(fab_three, -450);
+                    animationHint(fab_one, totalD);
+                    animationHint(fab_two, 2*totalD);
+                    animationHint(fab_three, 3*totalD);
                     isShow = false;
                 }
                 Intent intent1 = new Intent(this, SpeechRecognitionActivity.class);
                 startActivity(intent1);
             default:
                 if (isShow) {
-                    animationHint(fab_one, -150);
-                    animationHint(fab_two, -300);
-                    animationHint(fab_three, -450);
+                    animationHint(fab_one, totalD);
+                    animationHint(fab_two, 2*totalD);
+                    animationHint(fab_three, 3*totalD);
                     isShow = false;
                 }
                 break;
@@ -315,6 +360,7 @@ public class TotalActivity extends AppCompatActivity implements View.OnClickList
             }
         }
     }
+
 
 
     private boolean hasSdcard() {

@@ -10,7 +10,13 @@ import com.example.jungle.keepinmind1.Bean.RetrunJson;
 import java.util.List;
 import java.util.Map;
 
+import okhttp3.MultipartBody;
+import okhttp3.RequestBody;
+import retrofit2.http.Body;
 import retrofit2.http.GET;
+import retrofit2.http.Multipart;
+import retrofit2.http.POST;
+import retrofit2.http.Part;
 import retrofit2.http.Query;
 import retrofit2.http.Url;
 import rx.Observable;
@@ -30,12 +36,22 @@ public interface MyService {
 //    // 首页 - 获取当前登录用户及其所关注（授权）用户的最新微博
     @GET("/Test/getpassage")
     Observable<RetrunJson<List<ManageMoneyPassage>>> getpassage();
+
     @GET("/Test/getgupiao")
     Observable<RetrunJson<List<GuPiaoBean>>> getgupiao();
+
     @GET()
     Observable<RetrunJson<Map<String, JiJinBean>[]>> getJiJin(@Url String url);
+
     @GET("/Test/searchgupiao")
     Observable<RetrunJson<GuPiaoContent>> getGuPiaoByCode(@Query("code") String code);
+
     @GET("/Test/getad")
     Observable<RetrunJson<List<ManageMoneyPassage>>> getAd();
+
+    @Multipart
+    @POST("/Test/upload")
+    Observable<RetrunJson<String>> upload(@Part("username") RequestBody username,
+                                          @Part MultipartBody.Part file);
+
 }

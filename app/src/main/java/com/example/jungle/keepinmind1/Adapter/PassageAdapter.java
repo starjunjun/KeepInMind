@@ -4,12 +4,15 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.support.v7.widget.RecyclerView;
+import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
@@ -93,7 +96,14 @@ public class PassageAdapter extends RecyclerView.Adapter<PassageAdapter.ViewHold
             yearAdd = (TextView) view.findViewById(R.id.year_add);
             yearDecrease = (TextView) view.findViewById(R.id.year_decrease);
             pb= (ProgressBottle) view.findViewById(R.id.pb);
-
+            WindowManager wm = (WindowManager) mContext
+                    .getSystemService(Context.WINDOW_SERVICE);
+            int width1 = wm.getDefaultDisplay().getWidth();
+            ViewGroup.LayoutParams lp;
+            lp=pb.getLayoutParams();
+            lp.width=width1/5;
+            lp.height=(int)TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_SP, 130,mContext.getResources().getDisplayMetrics());;
+            pb.setLayoutParams(lp);
             linearLayout2 = (LinearLayout) view.findViewById(R.id.linearLayout2);
 
 
