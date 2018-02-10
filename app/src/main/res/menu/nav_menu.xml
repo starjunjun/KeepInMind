@@ -12,30 +12,48 @@
         android:title="小票识别"
         app:showAsAction="ifRoom" />
     <item
-        android:id="@+id/uploadBook"
-        android:icon="@drawable/upload"
-        android:title="导出账本"
-        app:showAsAction="never" />
-    <item
-        android:id="@+id/InBook"
-        android:icon="@drawable/inbook"
-        android:title="导入账本"
-        app:showAsAction="never" />
-    <item
         android:id="@+id/voice"
         android:icon="@drawable/voice1"
         android:title="语音记账"
         app:showAsAction="never" />
+    <item android:title="Bill operation">
+        <menu>
+            <item
+                android:id="@+id/uploadBook"
+                android:icon="@drawable/upload"
+                android:title="上传账本"
+                app:showAsAction="never" />
+            <item
+                android:id="@+id/downloadBook"
+                android:icon="@drawable/download"
+                android:title="同步账本"
+                app:showAsAction="never" />
+            <item
+                android:id="@+id/exportBook"
+                android:icon="@drawable/export"
+                android:title="导出账本"
+                app:showAsAction="never" />
+            <item
+                android:id="@+id/InBook"
+                android:icon="@drawable/inbook"
+                android:title="导入账本"
+                app:showAsAction="never" />
+        </menu>
+    </item>
+    <group
+        android:id="@+id/nav_about_group">
     <item
-        android:id="@+id/settings"
-        android:icon="@drawable/setting"
-        android:title="设置"
-        app:showAsAction="never" />
-
+        android:title="about">
     <item
         android:id="@+id/clearCache"
         android:icon="@drawable/clear"
         android:title="清理缓存数据"
+        app:showAsAction="never" />
+
+    <item
+        android:id="@+id/settings"
+        android:icon="@drawable/setting"
+        android:title="设置"
         app:showAsAction="never" />
 
 
@@ -44,5 +62,7 @@
         android:icon="@drawable/signout"
         android:title="退出账号"
         app:showAsAction="never" />
+    </item>
+    </group>
 
 </menu>

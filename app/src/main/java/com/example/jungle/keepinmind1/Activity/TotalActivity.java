@@ -121,6 +121,16 @@ public class TotalActivity extends AppCompatActivity implements View.OnClickList
                         new PhotoDialog(TotalActivity.this).show();
                         break;
                     case R.id.uploadBook:
+                        Intent intent1 = new Intent(TotalActivity.this, SignInActivity.class);
+                        startActivity(intent1);
+                        drawerLayout.closeDrawers();
+                        break;
+                    case R.id.downloadBook:
+                        Intent intent2 = new Intent(TotalActivity.this, SignInActivity.class);
+                        startActivity(intent2);
+                        drawerLayout.closeDrawers();
+                        break;
+                    case R.id.exportBook:
                         DatabaseDump db = new DatabaseDump(LitePal.getDatabase(), "/sdcard/export.xml");
                         db.writeExcel("managemoneydbbean");
                         drawerLayout.closeDrawers();
@@ -141,8 +151,8 @@ public class TotalActivity extends AppCompatActivity implements View.OnClickList
                         break;
                     case R.id.voice:
                         drawerLayout.closeDrawers();
-                        Intent intent1 = new Intent(TotalActivity.this, SpeechRecognitionActivity.class);
-                        startActivity(intent1);
+                        Intent intent3 = new Intent(TotalActivity.this, SpeechRecognitionActivity.class);
+                        startActivity(intent3);
                         break;
                     case R.id.settings:
                         drawerLayout.closeDrawers();
