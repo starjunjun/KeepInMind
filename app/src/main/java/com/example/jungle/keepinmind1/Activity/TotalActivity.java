@@ -58,7 +58,10 @@ import org.litepal.LitePal;
 import org.litepal.crud.DataSupport;
 
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -69,6 +72,12 @@ import jxl.read.biff.BiffException;
 import okhttp3.MediaType;
 import okhttp3.MultipartBody;
 import okhttp3.RequestBody;
+
+import okhttp3.Response;
+import okhttp3.ResponseBody;
+
+import rx.Subscriber;
+
 
 import static android.os.Environment.getExternalStorageState;
 
@@ -123,6 +132,32 @@ public class TotalActivity extends AppCompatActivity implements View.OnClickList
                     case R.id.uploadBook:
                         Intent intent1 = new Intent(TotalActivity.this, SignInActivity.class);
                         startActivity(intent1);
+                        String FName = Environment.getExternalStorageDirectory() + "/managemoneydbbean.xls";
+
+                        File file1 = new File(FName);
+                        // create RequestBody instance from file
+                        RequestBody description =
+                                RequestBody.create(MediaType.parse("multipart/form-data"), file1);
+                        RequestBody username =
+                                RequestBody.create(MediaType.parse("multipart/form-data"),"123.xls");
+
+                        // MultipartBody.Part is used to send also the actual file name
+                        MultipartBody.Part file =
+                                MultipartBody.Part.createFormData("file", file1.getName(), description);
+
+
+                        NetRequestFactory.getInstance().createService(MyService.class).upload(username,file).compose(Transform.<RetrunJson<String>>defaultSchedulers()).subscribe(new HttpResultSubscriber<RetrunJson<String>>() {
+                            @Override
+                            public void onSuccess(RetrunJson<String> rj) {
+                                System.out.println(rj.getResult().toString());
+                            }
+
+                            @Override
+                            public void _onError(RetrunJson<String> rj) {
+
+                            }
+
+                        });
                         drawerLayout.closeDrawers();
                         break;
                     case R.id.downloadBook:
@@ -175,35 +210,113 @@ public class TotalActivity extends AppCompatActivity implements View.OnClickList
         }
         initViewPager();
         initView();
-        String FName = Environment.getExternalStorageDirectory() + "/managemoneydbbean.xls";
-
-        File file1 = new File(FName);
-        // create RequestBody instance from file
-        RequestBody description =
-                RequestBody.create(MediaType.parse("multipart/form-data"), file1);
-        RequestBody username =
-                RequestBody.create(MediaType.parse("multipart/form-data"),"123.xls");
-
-        // MultipartBody.Part is used to send also the actual file name
-        MultipartBody.Part file =
-                MultipartBody.Part.createFormData("file", file1.getName(), description);
 
 
-        NetRequestFactory.getInstance().createService(MyService.class).upload(username,file).compose(Transform.<RetrunJson<String>>defaultSchedulers()).subscribe(new HttpResultSubscriber<RetrunJson<String>>() {
+//        NetRequestFactory.getInstance().createService(MyService.class).register("zjj1","zjj1","zjj1").compose(Transform.<RetrunJson<String>>defaultSchedulers()).subscribe(new HttpResultSubscriber<RetrunJson<String>>() {
+//            @Override
+//            public void onSuccess(RetrunJson<String> rj) {
+//                System.out.println(rj.getResult().toString());
+//            }
+//
+//            @Override
+//            public void _onError(RetrunJson<String> rj) {
+//
+//            }
+//
+//        });
+
+
+
+//        NetRequestFactory.getInstance().createService(MyService.class).sign("zjj","zjj").compose(Transform.<RetrunJson<String>>defaultSchedulers()).subscribe(new HttpResultSubscriber<RetrunJson<String>>() {
+//            @Override
+//            public void onSuccess(RetrunJson<String> rj) {
+//                System.out.println(rj.getResult().toString());
+//            }
+//
+//            @Override
+//            public void _onError(RetrunJson<String> rj) {
+//
+//            }
+//
+//        });
+
+//        RequestBody username =
+//                RequestBody.create(MediaType.parse("multipart/form-data"),"123.xls");
+
+        NetRequestFactory.getInstance().createService(MyService.class).download("123.xls").compose(Transform.<ResponseBody>defaultSchedulers()).subscribe(new Subscriber<ResponseBody>() {
             @Override
-            public void onSuccess(RetrunJson<String> rj) {
-                System.out.println(rj.getResult().toString());
+            public void onCompleted() {
+                System.out.println("111");
             }
 
             @Override
-            public void _onError(RetrunJson<String> rj) {
-
+            public void onError(Throwable e) {
+                e.printStackTrace();
             }
+
+            @Override
+            public void onNext(ResponseBody responseBody) {
+                System.out.println("333");
+                boolean writtenToDisk = writeResponseBodyToDisk(responseBody,"zjj1.xml");
+                System.out.println(writtenToDisk);
+            }
+
+
 
         });
 
-    }
 
+    }
+    private boolean writeResponseBodyToDisk(ResponseBody body,String filename) {
+        try {
+            System.out.println(Environment.getExternalStorageDirectory() + File.separator + filename);
+            // todo change the file location/name according to your needs
+            File futureStudioIconFile = new File(Environment.getExternalStorageDirectory() + File.separator + filename);
+
+            InputStream inputStream = null;
+            OutputStream outputStream = null;
+
+            try {
+                byte[] fileReader = new byte[4096];
+
+                long fileSize = body.contentLength();
+                long fileSizeDownloaded = 0;
+
+                inputStream = body.byteStream();
+                outputStream = new FileOutputStream(futureStudioIconFile);
+
+                while (true) {
+                    int read = inputStream.read(fileReader);
+
+                    if (read == -1) {
+                        break;
+                    }
+
+                    outputStream.write(fileReader, 0, read);
+
+                    fileSizeDownloaded += read;
+
+//                    Log.d(TAG, "file download: " + fileSizeDownloaded + " of " + fileSize);
+                }
+
+                outputStream.flush();
+
+                return true;
+            } catch (IOException e) {
+                return false;
+            } finally {
+                if (inputStream != null) {
+                    inputStream.close();
+                }
+
+                if (outputStream != null) {
+                    outputStream.close();
+                }
+            }
+        } catch (IOException e) {
+            return false;
+        }
+    }
     private void initViewPager() {
 
         TabLayout tabLayout = (TabLayout) findViewById(R.id.tabLayout);

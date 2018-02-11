@@ -12,7 +12,14 @@ import java.util.Map;
 
 import okhttp3.MultipartBody;
 import okhttp3.RequestBody;
+
+
+import okhttp3.Response;
+import okhttp3.ResponseBody;
+
 import retrofit2.http.Body;
+import retrofit2.http.Field;
+import retrofit2.http.FormUrlEncoded;
 import retrofit2.http.GET;
 import retrofit2.http.Multipart;
 import retrofit2.http.POST;
@@ -53,5 +60,18 @@ public interface MyService {
     @POST("/Test/upload")
     Observable<RetrunJson<String>> upload(@Part("username") RequestBody username,
                                           @Part MultipartBody.Part file);
+
+
+    @GET("Test/download")
+    Observable<ResponseBody> download(@Query("username") String username);
+
+
+    @FormUrlEncoded
+    @POST("/Test/sign")
+    Observable<RetrunJson<String>> sign(@Field("account") String account,@Field("password") String password);
+
+    @FormUrlEncoded
+    @POST("/Test/register")
+    Observable<RetrunJson<String>> register(@Field("account") String account,@Field("password") String password,@Field("username") String username);
 
 }
