@@ -72,6 +72,6 @@ public interface MyService {
 
     @FormUrlEncoded
     @POST("/Test/register")
-    Observable<RetrunJson<String>> register(@Field("account") String account,@Field("password") String password,@Field("username") String username);
+    Observable<RetrunJson<String>> register(@Field("username") String username,@Field("account") String account,@Field("password") String password);
 
 }

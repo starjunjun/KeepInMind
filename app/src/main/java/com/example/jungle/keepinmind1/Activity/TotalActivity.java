@@ -2,13 +2,10 @@ package com.example.jungle.keepinmind1.Activity;
 
 import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
-import android.content.ContentValues;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Environment;
-import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
@@ -16,25 +13,19 @@ import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
-import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.Toolbar;
-import android.transition.ChangeBounds;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.Window;
 import android.view.animation.AnticipateInterpolator;
 import android.view.animation.OvershootInterpolator;
 import android.widget.Toast;
 
-import com.example.jungle.keepinmind1.Adapter.PassageAdapter;
+
 import com.example.jungle.keepinmind1.Adapter.ViewPagerAdapter;
-import com.example.jungle.keepinmind1.Bean.ManageMoneyPassage;
 import com.example.jungle.keepinmind1.Bean.RetrunJson;
 import com.example.jungle.keepinmind1.Fragment.AccountFragment;
 import com.example.jungle.keepinmind1.Fragment.DetailBillFragment;
@@ -45,7 +36,6 @@ import com.example.jungle.keepinmind1.Utils.DataBaseUtil.MathUtils;
 import com.example.jungle.keepinmind1.Utils.PublicUtil.DatabaseDump;
 import com.example.jungle.keepinmind1.Utils.PublicUtil.DownFileUtil;
 import com.example.jungle.keepinmind1.Utils.PublicUtil.PhotoDialog;
-import com.example.jungle.keepinmind1.Utils.PublicUtil.RecycleViewDivider;
 import com.example.jungle.keepinmind1.Utils.RetrofitUtil.HttpResultSubscriber;
 import com.example.jungle.keepinmind1.Utils.RetrofitUtil.MyService;
 import com.example.jungle.keepinmind1.Utils.RetrofitUtil.NetRequestFactory;
@@ -62,24 +52,15 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
-
 import de.hdodenhof.circleimageview.CircleImageView;
 import jxl.read.biff.BiffException;
 import okhttp3.MediaType;
 import okhttp3.MultipartBody;
 import okhttp3.RequestBody;
-
-import okhttp3.Response;
 import okhttp3.ResponseBody;
-
 import rx.Subscriber;
-
-
-import static android.os.Environment.getExternalStorageState;
 
 public class TotalActivity extends AppCompatActivity implements View.OnClickListener {
     private int REQUESTCODE_FROM_ACTIVITY = 1000;
@@ -147,6 +128,7 @@ public class TotalActivity extends AppCompatActivity implements View.OnClickList
 
 
                         NetRequestFactory.getInstance().createService(MyService.class).upload(username,file).compose(Transform.<RetrunJson<String>>defaultSchedulers()).subscribe(new HttpResultSubscriber<RetrunJson<String>>() {
+
                             @Override
                             public void onSuccess(RetrunJson<String> rj) {
                                 System.out.println(rj.getResult().toString());
@@ -182,7 +164,6 @@ public class TotalActivity extends AppCompatActivity implements View.OnClickList
                                 .withBackgroundColor("#FFFFFF")
                                 .withTitleColor("#000000")
                                 .start();
-
                         break;
                     case R.id.voice:
                         drawerLayout.closeDrawers();
@@ -212,33 +193,7 @@ public class TotalActivity extends AppCompatActivity implements View.OnClickList
         initView();
 
 
-//        NetRequestFactory.getInstance().createService(MyService.class).register("zjj1","zjj1","zjj1").compose(Transform.<RetrunJson<String>>defaultSchedulers()).subscribe(new HttpResultSubscriber<RetrunJson<String>>() {
-//            @Override
-//            public void onSuccess(RetrunJson<String> rj) {
-//                System.out.println(rj.getResult().toString());
-//            }
-//
-//            @Override
-//            public void _onError(RetrunJson<String> rj) {
-//
-//            }
-//
-//        });
 
-
-
-//        NetRequestFactory.getInstance().createService(MyService.class).sign("zjj","zjj").compose(Transform.<RetrunJson<String>>defaultSchedulers()).subscribe(new HttpResultSubscriber<RetrunJson<String>>() {
-//            @Override
-//            public void onSuccess(RetrunJson<String> rj) {
-//                System.out.println(rj.getResult().toString());
-//            }
-//
-//            @Override
-//            public void _onError(RetrunJson<String> rj) {
-//
-//            }
-//
-//        });
 
 //        RequestBody username =
 //                RequestBody.create(MediaType.parse("multipart/form-data"),"123.xls");
@@ -257,15 +212,10 @@ public class TotalActivity extends AppCompatActivity implements View.OnClickList
             @Override
             public void onNext(ResponseBody responseBody) {
                 System.out.println("333");
-                boolean writtenToDisk = writeResponseBodyToDisk(responseBody,"zjj1.xml");
+                boolean writtenToDisk = writeResponseBodyToDisk(responseBody,"zjj.xml");
                 System.out.println(writtenToDisk);
             }
-
-
-
         });
-
-
     }
     private boolean writeResponseBodyToDisk(ResponseBody body,String filename) {
         try {
@@ -291,16 +241,11 @@ public class TotalActivity extends AppCompatActivity implements View.OnClickList
                     if (read == -1) {
                         break;
                     }
-
                     outputStream.write(fileReader, 0, read);
-
                     fileSizeDownloaded += read;
-
 //                    Log.d(TAG, "file download: " + fileSizeDownloaded + " of " + fileSize);
                 }
-
                 outputStream.flush();
-
                 return true;
             } catch (IOException e) {
                 return false;
@@ -337,6 +282,7 @@ public class TotalActivity extends AppCompatActivity implements View.OnClickList
     }
 
     private void initView() {
+
         fab = (android.support.design.widget.FloatingActionButton) findViewById(R.id.fab);
         fab_one = (android.support.design.widget.FloatingActionButton) findViewById(R.id.fab_one);
         fab_two = (FloatingActionButton) findViewById(R.id.fab_two);
@@ -349,6 +295,7 @@ public class TotalActivity extends AppCompatActivity implements View.OnClickList
     }
 
     private void animationShow(View view, int translateY) {
+
         if (view != null) {
             view.setVisibility(View.VISIBLE);
         }
