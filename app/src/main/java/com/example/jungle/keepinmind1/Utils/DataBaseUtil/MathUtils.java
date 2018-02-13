@@ -6,6 +6,8 @@ package com.example.jungle.keepinmind1.Utils.DataBaseUtil;
 
 public class MathUtils {
     public static double budget=0;
+    public static boolean flags=false;
+    public static String account;
     public static  double format(double number){
         java.text.DecimalFormat   df   =new   java.text.DecimalFormat("#.00");
         df.format(number);

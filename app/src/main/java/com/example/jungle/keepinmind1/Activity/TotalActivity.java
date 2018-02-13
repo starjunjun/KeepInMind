@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Environment;
+import android.provider.Settings;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
@@ -54,6 +55,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.List;
+
 import de.hdodenhof.circleimageview.CircleImageView;
 import jxl.read.biff.BiffException;
 import okhttp3.MediaType;
@@ -85,6 +87,11 @@ public class TotalActivity extends AppCompatActivity implements View.OnClickList
         SharedPreferences settings = getSharedPreferences("data", 0);
         //2、取出数据
         MathUtils.budget = settings.getFloat("budget", 0);
+        MathUtils.flags = settings.getBoolean("flag", false);
+        MathUtils.account=settings.getString("account","chucuo");
+        if (System.currentTimeMillis() - settings.getLong("signintime", 0) > 7 * 24 * 60 * 60 * 1000) {
+            MathUtils.flags = false;
+        }
         LitePal.getDatabase();
         icon_image = (CircleImageView) findViewById(R.id.icon_image);
         drawerLayout = (DrawerLayout) findViewById(R.id.drawer);
@@ -111,35 +118,40 @@ public class TotalActivity extends AppCompatActivity implements View.OnClickList
                         new PhotoDialog(TotalActivity.this).show();
                         break;
                     case R.id.uploadBook:
-                        Intent intent1 = new Intent(TotalActivity.this, SignInActivity.class);
-                        startActivity(intent1);
-                        String FName = Environment.getExternalStorageDirectory() + "/managemoneydbbean.xls";
+                        if (!MathUtils.flags) {
+                            Intent intent1 = new Intent(TotalActivity.this, SignInActivity.class);
+                            startActivity(intent1);
+                        } else {
+                            DatabaseDump db = new DatabaseDump(LitePal.getDatabase(), "/sdcard/export.xml");
+                            db.writeExcel("managemoneydbbean");
+                            String FName = Environment.getExternalStorageDirectory() + "/managemoneydbbean.xls";
 
-                        File file1 = new File(FName);
-                        // create RequestBody instance from file
-                        RequestBody description =
-                                RequestBody.create(MediaType.parse("multipart/form-data"), file1);
-                        RequestBody username =
-                                RequestBody.create(MediaType.parse("multipart/form-data"),"123.xls");
+                            File file1 = new File(FName);
+                            // create RequestBody instance from file
+                            RequestBody description =
+                                    RequestBody.create(MediaType.parse("multipart/form-data"), file1);
+                            RequestBody username =
+                                    RequestBody.create(MediaType.parse("multipart/form-data"), MathUtils.account+".xls");
 
-                        // MultipartBody.Part is used to send also the actual file name
-                        MultipartBody.Part file =
-                                MultipartBody.Part.createFormData("file", file1.getName(), description);
+                            // MultipartBody.Part is used to send also the actual file name
+                            MultipartBody.Part file =
+                                    MultipartBody.Part.createFormData("file", file1.getName(), description);
 
 
-                        NetRequestFactory.getInstance().createService(MyService.class).upload(username,file).compose(Transform.<RetrunJson<String>>defaultSchedulers()).subscribe(new HttpResultSubscriber<RetrunJson<String>>() {
+                            NetRequestFactory.getInstance().createService(MyService.class).upload(username, file).compose(Transform.<RetrunJson<String>>defaultSchedulers()).subscribe(new HttpResultSubscriber<RetrunJson<String>>() {
 
-                            @Override
-                            public void onSuccess(RetrunJson<String> rj) {
-                                System.out.println(rj.getResult().toString());
-                            }
+                                @Override
+                                public void onSuccess(RetrunJson<String> rj) {
+                                    System.out.println(rj.getResult().toString());
+                                }
 
-                            @Override
-                            public void _onError(RetrunJson<String> rj) {
+                                @Override
+                                public void _onError(RetrunJson<String> rj) {
 
-                            }
+                                }
 
-                        });
+                            });
+                        }
                         drawerLayout.closeDrawers();
                         break;
                     case R.id.downloadBook:
@@ -159,7 +171,7 @@ public class TotalActivity extends AppCompatActivity implements View.OnClickList
                                 .withRequestCode(REQUESTCODE_FROM_ACTIVITY)
                                 .withTitle("选择导入的文件")
                                 .withMutilyMode(false)
-                                .withFileFilter(new String[]{ ".xls"})
+                                .withFileFilter(new String[]{".xls"})
                                 .withBackIcon(Constant.BACKICON_STYLETHREE)
                                 .withBackgroundColor("#FFFFFF")
                                 .withTitleColor("#000000")
@@ -193,31 +205,30 @@ public class TotalActivity extends AppCompatActivity implements View.OnClickList
         initView();
 
 
-
-
 //        RequestBody username =
 //                RequestBody.create(MediaType.parse("multipart/form-data"),"123.xls");
-
-        NetRequestFactory.getInstance().createService(MyService.class).download("123.xls").compose(Transform.<ResponseBody>defaultSchedulers()).subscribe(new Subscriber<ResponseBody>() {
-            @Override
-            public void onCompleted() {
-                System.out.println("111");
-            }
-
-            @Override
-            public void onError(Throwable e) {
-                e.printStackTrace();
-            }
-
-            @Override
-            public void onNext(ResponseBody responseBody) {
-                System.out.println("333");
-                boolean writtenToDisk = writeResponseBodyToDisk(responseBody,"zjj.xml");
-                System.out.println(writtenToDisk);
-            }
-        });
+//
+//        NetRequestFactory.getInstance().createService(MyService.class).download("123.xls").compose(Transform.<ResponseBody>defaultSchedulers()).subscribe(new Subscriber<ResponseBody>() {
+//            @Override
+//            public void onCompleted() {
+//                System.out.println("111");
+//            }
+//
+//            @Override
+//            public void onError(Throwable e) {
+//                e.printStackTrace();
+//            }
+//
+//            @Override
+//            public void onNext(ResponseBody responseBody) {
+//                System.out.println("333");
+//                boolean writtenToDisk = writeResponseBodyToDisk(responseBody, "zjj.xml");
+//                System.out.println(writtenToDisk);
+//            }
+//        });
     }
-    private boolean writeResponseBodyToDisk(ResponseBody body,String filename) {
+
+    private boolean writeResponseBodyToDisk(ResponseBody body, String filename) {
         try {
             System.out.println(Environment.getExternalStorageDirectory() + File.separator + filename);
             // todo change the file location/name according to your needs
@@ -262,6 +273,7 @@ public class TotalActivity extends AppCompatActivity implements View.OnClickList
             return false;
         }
     }
+
     private void initViewPager() {
 
         TabLayout tabLayout = (TabLayout) findViewById(R.id.tabLayout);
@@ -320,21 +332,21 @@ public class TotalActivity extends AppCompatActivity implements View.OnClickList
             case R.id.fab:
                 if (!isShow) {
                     animationShow(fab_one, totalD);
-                    animationShow(fab_two, 2*totalD);
-                    animationShow(fab_three, 3*totalD);
+                    animationShow(fab_two, 2 * totalD);
+                    animationShow(fab_three, 3 * totalD);
                     isShow = true;
                 } else {
                     animationHint(fab_one, totalD);
-                    animationHint(fab_two, 2*totalD);
-                    animationHint(fab_three, 3*totalD);
+                    animationHint(fab_two, 2 * totalD);
+                    animationHint(fab_three, 3 * totalD);
                     isShow = false;
                 }
                 break;
             case R.id.fab_one:
                 if (isShow) {
                     animationHint(fab_one, totalD);
-                    animationHint(fab_two, 2*totalD);
-                    animationHint(fab_three, 3*totalD);
+                    animationHint(fab_two, 2 * totalD);
+                    animationHint(fab_three, 3 * totalD);
                     isShow = false;
                 }
                 Intent intent = new Intent(this, ChartActivity.class);
@@ -343,8 +355,8 @@ public class TotalActivity extends AppCompatActivity implements View.OnClickList
             case R.id.fab_two:
                 if (isShow) {
                     animationHint(fab_one, totalD);
-                    animationHint(fab_two, 2*totalD);
-                    animationHint(fab_three, 3*totalD);
+                    animationHint(fab_two, 2 * totalD);
+                    animationHint(fab_three, 3 * totalD);
                     isShow = false;
                 }
                 new PhotoDialog(TotalActivity.this).show();
@@ -352,8 +364,8 @@ public class TotalActivity extends AppCompatActivity implements View.OnClickList
             case R.id.fab_three:
                 if (isShow) {
                     animationHint(fab_one, totalD);
-                    animationHint(fab_two, 2*totalD);
-                    animationHint(fab_three, 3*totalD);
+                    animationHint(fab_two, 2 * totalD);
+                    animationHint(fab_three, 3 * totalD);
                     isShow = false;
                 }
                 Intent intent1 = new Intent(this, SpeechRecognitionActivity.class);
@@ -361,8 +373,8 @@ public class TotalActivity extends AppCompatActivity implements View.OnClickList
             default:
                 if (isShow) {
                     animationHint(fab_one, totalD);
-                    animationHint(fab_two, 2*totalD);
-                    animationHint(fab_three, 3*totalD);
+                    animationHint(fab_two, 2 * totalD);
+                    animationHint(fab_three, 3 * totalD);
                     isShow = false;
                 }
                 break;
@@ -416,7 +428,7 @@ public class TotalActivity extends AppCompatActivity implements View.OnClickList
         if (resultCode == RESULT_OK) {
             if (requestCode == REQUESTCODE_FROM_ACTIVITY) {
                 List<String> list = data.getStringArrayListExtra(Constant.RESULT_INFO);
-                Toast.makeText(getApplicationContext(),"导入成功" , Toast.LENGTH_SHORT).show();
+                Toast.makeText(getApplicationContext(), "导入成功", Toast.LENGTH_SHORT).show();
                 DataSupport.deleteAll("managemoneydbbean");
                 DatabaseDump db1 = new DatabaseDump(LitePal.getDatabase(), "/sdcard/export.xml");
                 try {
@@ -430,7 +442,6 @@ public class TotalActivity extends AppCompatActivity implements View.OnClickList
             }
         }
     }
-
 
 
     private boolean hasSdcard() {

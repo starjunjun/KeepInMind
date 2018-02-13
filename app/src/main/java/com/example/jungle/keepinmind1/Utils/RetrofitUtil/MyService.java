@@ -6,6 +6,7 @@ import com.example.jungle.keepinmind1.Bean.GuPiaoContent;
 import com.example.jungle.keepinmind1.Bean.JiJinBean;
 import com.example.jungle.keepinmind1.Bean.ManageMoneyPassage;
 import com.example.jungle.keepinmind1.Bean.RetrunJson;
+import com.example.jungle.keepinmind1.Bean.User;
 
 import java.util.List;
 import java.util.Map;
@@ -68,7 +69,7 @@ public interface MyService {
 
     @FormUrlEncoded
     @POST("/Test/sign")
-    Observable<RetrunJson<String>> sign(@Field("account") String account,@Field("password") String password);
+    Observable<RetrunJson<User>> sign(@Field("account") String account, @Field("password") String password);
 
     @FormUrlEncoded
     @POST("/Test/register")

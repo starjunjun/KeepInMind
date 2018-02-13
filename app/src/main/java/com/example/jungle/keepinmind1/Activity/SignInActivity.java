@@ -1,7 +1,9 @@
 package com.example.jungle.keepinmind1.Activity;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Paint;
+import android.os.Environment;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -13,13 +15,21 @@ import android.widget.Button;
 import android.widget.TextView;
 
 import com.example.jungle.keepinmind1.Bean.RetrunJson;
+import com.example.jungle.keepinmind1.Bean.User;
 import com.example.jungle.keepinmind1.R;
+import com.example.jungle.keepinmind1.Utils.DataBaseUtil.MathUtils;
 import com.example.jungle.keepinmind1.Utils.PublicUtil.BaseActivity;
 import com.example.jungle.keepinmind1.Utils.RetrofitUtil.HttpResultSubscriber;
 import com.example.jungle.keepinmind1.Utils.RetrofitUtil.MyService;
 import com.example.jungle.keepinmind1.Utils.RetrofitUtil.NetRequestFactory;
 import com.example.jungle.keepinmind1.Utils.RetrofitUtil.Transform;
 import com.rengwuxian.materialedittext.MaterialEditText;
+
+import java.io.File;
+
+import okhttp3.MediaType;
+import okhttp3.MultipartBody;
+import okhttp3.RequestBody;
 
 public class SignInActivity extends BaseActivity {
     private Toolbar toolbar;
@@ -64,14 +74,29 @@ public class SignInActivity extends BaseActivity {
             public void onClick(View v) {
                 if (username.getText() != null && password.getText() != null) {
                     System.out.println("111");
-                    NetRequestFactory.getInstance().createService(MyService.class).sign(username.getText().toString().trim(),password.getText().toString().trim()).compose(Transform.<RetrunJson<String>>defaultSchedulers()).subscribe(new HttpResultSubscriber<RetrunJson<String>>() {
+                    NetRequestFactory.getInstance().createService(MyService.class).sign(username.getText().toString().trim(),password.getText().toString().trim()).compose(Transform.<RetrunJson<User>>defaultSchedulers()).subscribe(new HttpResultSubscriber<RetrunJson<User>>() {
                         @Override
-                        public void onSuccess(RetrunJson<String> rj) {
-                            System.out.println(rj.getResult().toString());
+                        public void onSuccess(RetrunJson<User> rj) {
+                            if(rj.getResultcode().equals("200")){
+                                System.out.println(rj.getResult().toString());
+                                SharedPreferences settings = getSharedPreferences("data", 0);
+                                SharedPreferences.Editor editor = settings.edit();
+                                editor.putString("username",rj.getResult().getUsername());
+                                editor.putString("account",rj.getResult().getAccount());
+                                editor.putLong("signintime",System.currentTimeMillis());
+                                MathUtils.account=rj.getResult().getAccount();
+                                editor.putBoolean("flag",true);
+                                MathUtils.flags=true;
+                                editor.commit();
+                                finish();
+
+//
+                            }
+
                         }
 
                         @Override
-                        public void _onError(RetrunJson<String> rj) {
+                        public void _onError(RetrunJson<User> rj) {
 
                         }
 

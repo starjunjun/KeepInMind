@@ -3,6 +3,7 @@ package com.example.jungle.keepinmind1.Activity;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.CardView;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -22,11 +23,12 @@ import com.rengwuxian.materialedittext.MaterialEditText;
 
 public class RegisterActivity extends BaseActivity {
     private Toolbar toolbar;
-    private EditText account;
+    private com.rengwuxian.materialedittext.MaterialEditText account;
     private com.rengwuxian.materialedittext.MaterialEditText username;
     private com.rengwuxian.materialedittext.MaterialEditText confirmPassword;
     private com.rengwuxian.materialedittext.MaterialEditText password;
     private Button Register;
+    private CardView cardview2;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,24 +45,33 @@ public class RegisterActivity extends BaseActivity {
     }
 
     private void initView() {
+        System.out.println("initView");
         account = (MaterialEditText) findViewById(R.id.account);
         username = (MaterialEditText) findViewById(R.id.username);
         password = (MaterialEditText) findViewById(R.id.password);
         confirmPassword = (MaterialEditText) findViewById(R.id.confirmPassword);
         Register = (Button) findViewById(R.id.Register);
-
+        cardview2= (CardView) findViewById(R.id.cardview2);
         Register.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (password.getText().toString().trim() != confirmPassword.getText().toString().trim()) {
+                System.out.println("Button");
+                if (!password.getText().toString().trim().equals(confirmPassword.getText().toString().trim())) {
+                    System.out.println("111");
                     Toast.makeText(RegisterActivity.this, "两次密码不一样", Toast.LENGTH_SHORT);
                 } else if (password.getText() == null || confirmPassword.getText() == null || account.getText() == null || username.getText() == null) {
+                    System.out.println("222");
                     Toast.makeText(RegisterActivity.this, "还未填写完毕", Toast.LENGTH_SHORT);
                 } else {
+                    System.out.println("333");
                     NetRequestFactory.getInstance().createService(MyService.class).register(username.getText().toString().trim(), account.getText().toString().trim(),password.getText().toString().trim()).compose(Transform.<RetrunJson<String>>defaultSchedulers()).subscribe(new HttpResultSubscriber<RetrunJson<String>>() {
                         @Override
                         public void onSuccess(RetrunJson<String> rj) {
-                            System.out.println(rj.getResult().toString());
+                            if(rj.getResultcode().equals("200")){
+                                Toast.makeText(RegisterActivity.this, "注册成功", Toast.LENGTH_SHORT);
+                            }
+                            finish();
+                            System.out.println("registerAcitity");
                         }
 
                         @Override
