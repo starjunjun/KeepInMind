@@ -73,7 +73,6 @@ public class SignInActivity extends BaseActivity {
             @Override
             public void onClick(View v) {
                 if (username.getText() != null && password.getText() != null) {
-                    System.out.println("111");
                     NetRequestFactory.getInstance().createService(MyService.class).sign(username.getText().toString().trim(),password.getText().toString().trim()).compose(Transform.<RetrunJson<User>>defaultSchedulers()).subscribe(new HttpResultSubscriber<RetrunJson<User>>() {
                         @Override
                         public void onSuccess(RetrunJson<User> rj) {
@@ -84,13 +83,13 @@ public class SignInActivity extends BaseActivity {
                                 editor.putString("username",rj.getResult().getUsername());
                                 editor.putString("account",rj.getResult().getAccount());
                                 editor.putLong("signintime",System.currentTimeMillis());
+                                editor.putString("head",rj.getResult().getHeadimg());
+                                editor.putString("introduce",rj.getResult().getIntroduce());
                                 MathUtils.account=rj.getResult().getAccount();
                                 editor.putBoolean("flag",true);
                                 MathUtils.flags=true;
                                 editor.commit();
                                 finish();
-
-//
                             }
 
                         }
@@ -101,9 +100,6 @@ public class SignInActivity extends BaseActivity {
                         }
 
                     });
-
-
-
                 } else {
                     System.out.println("账号密码为空");
                 }

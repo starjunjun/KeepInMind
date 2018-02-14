@@ -57,13 +57,10 @@ public class RegisterActivity extends BaseActivity {
             public void onClick(View v) {
                 System.out.println("Button");
                 if (!password.getText().toString().trim().equals(confirmPassword.getText().toString().trim())) {
-                    System.out.println("111");
                     Toast.makeText(RegisterActivity.this, "两次密码不一样", Toast.LENGTH_SHORT);
                 } else if (password.getText() == null || confirmPassword.getText() == null || account.getText() == null || username.getText() == null) {
-                    System.out.println("222");
                     Toast.makeText(RegisterActivity.this, "还未填写完毕", Toast.LENGTH_SHORT);
                 } else {
-                    System.out.println("333");
                     NetRequestFactory.getInstance().createService(MyService.class).register(username.getText().toString().trim(), account.getText().toString().trim(),password.getText().toString().trim()).compose(Transform.<RetrunJson<String>>defaultSchedulers()).subscribe(new HttpResultSubscriber<RetrunJson<String>>() {
                         @Override
                         public void onSuccess(RetrunJson<String> rj) {
@@ -71,7 +68,6 @@ public class RegisterActivity extends BaseActivity {
                                 Toast.makeText(RegisterActivity.this, "注册成功", Toast.LENGTH_SHORT);
                             }
                             finish();
-                            System.out.println("registerAcitity");
                         }
 
                         @Override

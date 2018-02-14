@@ -5,15 +5,19 @@ public class User {
     private String username;
     private String account;
     private String password;
+    private String headimg;
+    private String introduce;
 
     public User() {
     }
 
-    public User( String username, String account, String password) {
+    public User(String username, String account, String password, String headimg, String introduce) {
 
         this.username = username;
         this.account = account;
         this.password = password;
+        this.headimg = headimg;
+        this.introduce = introduce;
     }
 
     public int getId() {
@@ -46,5 +50,21 @@ public class User {
 
     public void setPassword(String password) {
         this.password = password;
+    }
+
+    public String getHeadimg() {
+        return headimg;
+    }
+
+    public void setHeadimg(String headimg) {
+        this.headimg = headimg;
+    }
+
+    public String getIntroduce() {
+        return introduce;
+    }
+
+    public void setIntroduce(String introduce) {
+        this.introduce = introduce;
     }
 }

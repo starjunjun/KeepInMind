@@ -27,7 +27,7 @@
                         android:id="@+id/icon_image"
                         android:layout_width="40dp"
                         android:layout_height="40dp"
-                        android:src="@mipmap/ic_launcher" />
+                        android:src="@drawable/user" />
 
                     <android.support.design.widget.TabLayout
                         android:id="@+id/tabLayout"

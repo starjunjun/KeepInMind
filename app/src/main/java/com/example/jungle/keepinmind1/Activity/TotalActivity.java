@@ -23,9 +23,11 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.animation.AnticipateInterpolator;
 import android.view.animation.OvershootInterpolator;
+import android.widget.TextView;
 import android.widget.Toast;
 
 
+import com.bumptech.glide.Glide;
 import com.example.jungle.keepinmind1.Adapter.ViewPagerAdapter;
 import com.example.jungle.keepinmind1.Bean.RetrunJson;
 import com.example.jungle.keepinmind1.Fragment.AccountFragment;
@@ -76,6 +78,9 @@ public class TotalActivity extends AppCompatActivity implements View.OnClickList
     private DrawerLayout drawerLayout;
     private boolean isShow = false;
     private int fab_height;
+    private CircleImageView icon_imagec;
+    private TextView username;
+    private TextView description;
 
 
     @Override
@@ -88,11 +93,26 @@ public class TotalActivity extends AppCompatActivity implements View.OnClickList
         //2、取出数据
         MathUtils.budget = settings.getFloat("budget", 0);
         MathUtils.flags = settings.getBoolean("flag", false);
-        MathUtils.account=settings.getString("account","chucuo");
+        MathUtils.account = settings.getString("account", "");
+        MathUtils.head = settings.getString("head","");
+        MathUtils.introduce = settings.getString("introduce","--");
+        MathUtils.username = settings.getString("username","--");
         if (System.currentTimeMillis() - settings.getLong("signintime", 0) > 7 * 24 * 60 * 60 * 1000) {
+            SharedPreferences.Editor editor = settings.edit();
+            editor.putString("account","");
+            editor.putString("username","--");
+            editor.putString("head","");
+            editor.putString("introduce","--");
+            editor.putBoolean("flags",false);
+            MathUtils.account="";
             MathUtils.flags = false;
+            editor.commit();
         }
         LitePal.getDatabase();
+        if (!(DownFileUtil.CheckExistFile(Environment.getExternalStorageDirectory() + "/Download/tessdata/chi") && DownFileUtil.CheckExistFile(Environment.getExternalStorageDirectory() + "/Download/tessdata/eng"))) {
+            Intent intent = new Intent(this, DownloadService.class);
+            startService(intent);
+        }
         icon_image = (CircleImageView) findViewById(R.id.icon_image);
         drawerLayout = (DrawerLayout) findViewById(R.id.drawer);
         icon_image.setOnClickListener(new View.OnClickListener() {
@@ -102,6 +122,12 @@ public class TotalActivity extends AppCompatActivity implements View.OnClickList
             }
         });
         toolbar = (Toolbar) findViewById(R.id.toolbar);
+        initNav();
+        initViewPager();
+        initView();
+    }
+
+    private void initNav() {
         nav_view = (NavigationView) findViewById(R.id.nav_view);
         nav_view.setItemIconTintList(null);
         nav_view.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
@@ -131,7 +157,7 @@ public class TotalActivity extends AppCompatActivity implements View.OnClickList
                             RequestBody description =
                                     RequestBody.create(MediaType.parse("multipart/form-data"), file1);
                             RequestBody username =
-                                    RequestBody.create(MediaType.parse("multipart/form-data"), MathUtils.account+".xls");
+                                    RequestBody.create(MediaType.parse("multipart/form-data"), MathUtils.account + ".xls");
 
                             // MultipartBody.Part is used to send also the actual file name
                             MultipartBody.Part file =
@@ -155,8 +181,36 @@ public class TotalActivity extends AppCompatActivity implements View.OnClickList
                         drawerLayout.closeDrawers();
                         break;
                     case R.id.downloadBook:
-                        Intent intent2 = new Intent(TotalActivity.this, SignInActivity.class);
-                        startActivity(intent2);
+                        if (!MathUtils.flags) {
+                            Intent intent1 = new Intent(TotalActivity.this, SignInActivity.class);
+                            startActivity(intent1);
+                        } else {
+                            NetRequestFactory.getInstance().createService(MyService.class).download(MathUtils.account + ".xls").compose(Transform.<ResponseBody>defaultSchedulers()).subscribe(new Subscriber<ResponseBody>() {
+                                @Override
+                                public void onCompleted() {
+                                }
+
+                                @Override
+                                public void onError(Throwable e) {
+                                    e.printStackTrace();
+                                }
+
+                                @Override
+                                public void onNext(ResponseBody responseBody) {
+                                    boolean writtenToDisk = writeResponseBodyToDisk(responseBody, MathUtils.account + ".xls");
+                                    DataSupport.deleteAll("managemoneydbbean");
+                                    DatabaseDump db1 = new DatabaseDump(LitePal.getDatabase(), "/sdcard/export.xml");
+                                    try {
+                                        db1.readExcel(Environment.getExternalStorageDirectory() + File.separator + MathUtils.account + ".xls");
+                                        EventBus.getDefault().post("同步");
+                                    } catch (IOException e) {
+                                        e.printStackTrace();
+                                    } catch (BiffException e) {
+                                        e.printStackTrace();
+                                    }
+                                }
+                            });
+                        }
                         drawerLayout.closeDrawers();
                         break;
                     case R.id.exportBook:
@@ -197,35 +251,27 @@ public class TotalActivity extends AppCompatActivity implements View.OnClickList
                 return true;
             }
         });
-        if (!(DownFileUtil.CheckExistFile(Environment.getExternalStorageDirectory() + "/Download/tessdata/chi") && DownFileUtil.CheckExistFile(Environment.getExternalStorageDirectory() + "/Download/tessdata/eng"))) {
-            Intent intent = new Intent(this, DownloadService.class);
-            startService(intent);
+        View headerView = nav_view.getHeaderView(0);
+        icon_imagec = (CircleImageView) headerView.findViewById(R.id.icon_imagec);
+        username = (TextView) headerView.findViewById(R.id.username);
+        description = (TextView) headerView.findViewById(R.id.description);
+        if(!MathUtils.head.equals("")){
+            Glide.with(this).load(MathUtils.head).into(icon_imagec);
+            Glide.with(this).load(MathUtils.head).into(icon_image);
         }
-        initViewPager();
-        initView();
+        if(!MathUtils.username.equals("--")){
+            username.setText(MathUtils.username);
+        }
+        if(!MathUtils.introduce.equals("--")){
+            description.setText(MathUtils.introduce);
+        }
+        icon_imagec.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
 
+            }
+        });
 
-//        RequestBody username =
-//                RequestBody.create(MediaType.parse("multipart/form-data"),"123.xls");
-//
-//        NetRequestFactory.getInstance().createService(MyService.class).download("123.xls").compose(Transform.<ResponseBody>defaultSchedulers()).subscribe(new Subscriber<ResponseBody>() {
-//            @Override
-//            public void onCompleted() {
-//                System.out.println("111");
-//            }
-//
-//            @Override
-//            public void onError(Throwable e) {
-//                e.printStackTrace();
-//            }
-//
-//            @Override
-//            public void onNext(ResponseBody responseBody) {
-//                System.out.println("333");
-//                boolean writtenToDisk = writeResponseBodyToDisk(responseBody, "zjj.xml");
-//                System.out.println(writtenToDisk);
-//            }
-//        });
     }
 
     private boolean writeResponseBodyToDisk(ResponseBody body, String filename) {
@@ -233,16 +279,12 @@ public class TotalActivity extends AppCompatActivity implements View.OnClickList
             System.out.println(Environment.getExternalStorageDirectory() + File.separator + filename);
             // todo change the file location/name according to your needs
             File futureStudioIconFile = new File(Environment.getExternalStorageDirectory() + File.separator + filename);
-
             InputStream inputStream = null;
             OutputStream outputStream = null;
-
             try {
                 byte[] fileReader = new byte[4096];
-
                 long fileSize = body.contentLength();
                 long fileSizeDownloaded = 0;
-
                 inputStream = body.byteStream();
                 outputStream = new FileOutputStream(futureStudioIconFile);
 
@@ -254,7 +296,6 @@ public class TotalActivity extends AppCompatActivity implements View.OnClickList
                     }
                     outputStream.write(fileReader, 0, read);
                     fileSizeDownloaded += read;
-//                    Log.d(TAG, "file download: " + fileSizeDownloaded + " of " + fileSize);
                 }
                 outputStream.flush();
                 return true;
@@ -392,8 +433,6 @@ public class TotalActivity extends AppCompatActivity implements View.OnClickList
 
         set.setInterpolator(new AnticipateInterpolator());
         set.start();
-
-
     }
 
     @Override
@@ -401,18 +440,14 @@ public class TotalActivity extends AppCompatActivity implements View.OnClickList
         if (requestCode == PHOTO_REQUEST_GALLERY) {
             if (data != null) {
 // 得到图片的全路径
-
                 photoUri1 = data.getData();
                 Intent intent1 = new Intent(TotalActivity.this, PhotoActivity.class);
                 intent1.setData(photoUri1);
                 startActivity(intent1);
-
             }
-
         } else if (requestCode == PHOTO_REQUEST_CAMERA) {
             if (hasSdcard()) {
                 if (resultCode == -1) {
-
                     Intent intent1 = new Intent(TotalActivity.this, PhotoActivity.class);
                     intent1.setData(photoUri1);
                     startActivity(intent1);
@@ -442,7 +477,6 @@ public class TotalActivity extends AppCompatActivity implements View.OnClickList
             }
         }
     }
-
 
     private boolean hasSdcard() {
         return Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED);
