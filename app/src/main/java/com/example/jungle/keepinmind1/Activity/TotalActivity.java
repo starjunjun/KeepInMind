@@ -81,6 +81,8 @@ public class TotalActivity extends AppCompatActivity implements View.OnClickList
     private CircleImageView icon_imagec;
     private TextView username;
     private TextView description;
+    private Boolean chi;
+    private Boolean eng;
 
 
     @Override
@@ -97,6 +99,9 @@ public class TotalActivity extends AppCompatActivity implements View.OnClickList
         MathUtils.head = settings.getString("head","");
         MathUtils.introduce = settings.getString("introduce","--");
         MathUtils.username = settings.getString("username","--");
+        chi=settings.getBoolean("chi",false);
+        eng=settings.getBoolean("eng",false);
+
         if (System.currentTimeMillis() - settings.getLong("signintime", 0) > 7 * 24 * 60 * 60 * 1000) {
             SharedPreferences.Editor editor = settings.edit();
             editor.putString("account","");
@@ -109,7 +114,7 @@ public class TotalActivity extends AppCompatActivity implements View.OnClickList
             editor.commit();
         }
         LitePal.getDatabase();
-        if (!(DownFileUtil.CheckExistFile(Environment.getExternalStorageDirectory() + "/Download/tessdata/chi") && DownFileUtil.CheckExistFile(Environment.getExternalStorageDirectory() + "/Download/tessdata/eng"))) {
+        if (!(chi&&eng)) {
             Intent intent = new Intent(this, DownloadService.class);
             startService(intent);
         }

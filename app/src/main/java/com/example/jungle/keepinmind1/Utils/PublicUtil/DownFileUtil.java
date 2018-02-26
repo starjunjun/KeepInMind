@@ -5,9 +5,18 @@ import android.os.Environment;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.OutputStream;
+import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLConnection;
+import java.security.cert.X509Certificate;
+
+import javax.net.ssl.HttpsURLConnection;
+import javax.net.ssl.SSLContext;
+import javax.net.ssl.SSLSocketFactory;
+import javax.net.ssl.TrustManager;
+import javax.net.ssl.X509TrustManager;
 
 /**
  * Created by jungle on 2017/12/20.
@@ -15,7 +24,7 @@ import java.net.URLConnection;
 
 public class DownFileUtil {
 
-    public static boolean CheckExistFile(String path){
+    public static boolean CheckExistFile(String path) {
         if (null == path || "".equals(path.trim())) {
             return false;
         }
@@ -25,18 +34,21 @@ public class DownFileUtil {
     }
 
 
-
-    public static void download(String fileName1,String urls) {
+    public static void download(String fileName1, String urls) {
         try {
-
             URL url = new URL(urls);
             //打开连接
-            URLConnection conn = url.openConnection();
+            HttpsURLConnection conn = (HttpsURLConnection) url.openConnection();
+
+            SSLSocketFactory sf = new MySSLSocketFactory();
+            conn.setSSLSocketFactory(sf);
             //打开输入流
             InputStream is = conn.getInputStream();
+//            InputStreamReader is = new InputStreamReader(conn.getInputStream());
             //获得长度
             int contentLength = conn.getContentLength();
             //创建文件夹 MyDownLoad，在存储卡下
+            System.out.println(contentLength);
 
             String dirName = Environment.getExternalStorageDirectory() + "/Download/tessdata/";
             File file = new File(dirName);
@@ -58,6 +70,7 @@ public class DownFileUtil {
             while ((len = is.read(bs)) != -1) {
                 os.write(bs, 0, len);
             }
+
             //完成后关闭流
             os.close();
             is.close();
