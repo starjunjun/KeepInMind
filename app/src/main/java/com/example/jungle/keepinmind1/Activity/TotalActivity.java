@@ -83,6 +83,7 @@ public class TotalActivity extends AppCompatActivity implements View.OnClickList
     private TextView description;
     private Boolean chi;
     private Boolean eng;
+    private SharedPreferences settings;
 
 
     @Override
@@ -91,30 +92,30 @@ public class TotalActivity extends AppCompatActivity implements View.OnClickList
 
         setContentView(R.layout.activity_total);
         //1、获取Preferences
-        SharedPreferences settings = getSharedPreferences("data", 0);
+        settings = getSharedPreferences("data", 0);
         //2、取出数据
         MathUtils.budget = settings.getFloat("budget", 0);
-        MathUtils.flags = settings.getBoolean("flag", false);
+        MathUtils.flags = settings.getBoolean("flags", false);
         MathUtils.account = settings.getString("account", "");
-        MathUtils.head = settings.getString("head","");
-        MathUtils.introduce = settings.getString("introduce","--");
-        MathUtils.username = settings.getString("username","--");
-        chi=settings.getBoolean("chi",false);
-        eng=settings.getBoolean("eng",false);
+        MathUtils.head = settings.getString("head", "");
+        MathUtils.introduce = settings.getString("introduce", "--");
+        MathUtils.username = settings.getString("username", "--");
+        chi = settings.getBoolean("chi", false);
+        eng = settings.getBoolean("eng", false);
 
         if (System.currentTimeMillis() - settings.getLong("signintime", 0) > 7 * 24 * 60 * 60 * 1000) {
             SharedPreferences.Editor editor = settings.edit();
-            editor.putString("account","");
-            editor.putString("username","--");
-            editor.putString("head","");
-            editor.putString("introduce","--");
-            editor.putBoolean("flags",false);
-            MathUtils.account="";
+            editor.putString("account", "");
+            editor.putString("username", "--");
+            editor.putString("head", "");
+            editor.putString("introduce", "--");
+            editor.putBoolean("flags", false);
+            MathUtils.account = "";
             MathUtils.flags = false;
             editor.commit();
         }
         LitePal.getDatabase();
-        if (!(chi&&eng)) {
+        if (!(chi && eng)) {
             Intent intent = new Intent(this, DownloadService.class);
             startService(intent);
         }
@@ -145,8 +146,15 @@ public class TotalActivity extends AppCompatActivity implements View.OnClickList
                         drawerLayout.closeDrawers();
                         break;
                     case R.id.ocr:
+
+                        chi = settings.getBoolean("chi", false);
+                        eng = settings.getBoolean("eng", false);
+                        if (chi && eng) {
+                            new PhotoDialog(TotalActivity.this).show();
+                        } else {
+                            Toast.makeText(TotalActivity.this, "正在更新中，请稍等。", Toast.LENGTH_SHORT).show();
+                        }
                         drawerLayout.closeDrawers();
-                        new PhotoDialog(TotalActivity.this).show();
                         break;
                     case R.id.uploadBook:
                         if (!MathUtils.flags) {
@@ -220,6 +228,7 @@ public class TotalActivity extends AppCompatActivity implements View.OnClickList
                         break;
                     case R.id.exportBook:
                         DatabaseDump db = new DatabaseDump(LitePal.getDatabase(), "/sdcard/export.xml");
+                        Toast.makeText(TotalActivity.this, "已导出到/sdcard/managemoneydbbean.xls", Toast.LENGTH_SHORT).show();
                         db.writeExcel("managemoneydbbean");
                         drawerLayout.closeDrawers();
                         break;
@@ -249,6 +258,23 @@ public class TotalActivity extends AppCompatActivity implements View.OnClickList
                         break;
                     case R.id.signOut:
                         drawerLayout.closeDrawers();
+                        SharedPreferences.Editor editor = settings.edit();
+                        editor.putString("account", "");
+                        editor.putString("username", "--");
+                        editor.putString("head", "");
+                        editor.putString("introduce", "--");
+                        editor.putBoolean("flags", false);
+                        MathUtils.account = "";
+                        MathUtils.flags = false;
+                        editor.commit();
+                        MathUtils.budget = settings.getFloat("budget", 0);
+                        MathUtils.flags = settings.getBoolean("flags", false);
+                        MathUtils.account = settings.getString("account", "");
+                        MathUtils.head = settings.getString("head", "");
+                        MathUtils.introduce = settings.getString("introduce", "--");
+                        MathUtils.username = settings.getString("username", "--");
+                        username.setText(MathUtils.username);
+                        description.setText(MathUtils.introduce);
                         break;
                     default:
                         break;
@@ -260,20 +286,23 @@ public class TotalActivity extends AppCompatActivity implements View.OnClickList
         icon_imagec = (CircleImageView) headerView.findViewById(R.id.icon_imagec);
         username = (TextView) headerView.findViewById(R.id.username);
         description = (TextView) headerView.findViewById(R.id.description);
-        if(!MathUtils.head.equals("")){
+        if (!MathUtils.head.equals("")) {
             Glide.with(this).load(MathUtils.head).into(icon_imagec);
             Glide.with(this).load(MathUtils.head).into(icon_image);
         }
-        if(!MathUtils.username.equals("--")){
+        if (!MathUtils.username.equals("--")) {
             username.setText(MathUtils.username);
         }
-        if(!MathUtils.introduce.equals("--")){
+        if (!MathUtils.introduce.equals("--")) {
             description.setText(MathUtils.introduce);
         }
         icon_imagec.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                if (!MathUtils.flags) {
+                    Intent intent1 = new Intent(TotalActivity.this, SignInActivity.class);
+                    startActivity(intent1);
+                }
             }
         });
 
@@ -399,13 +428,21 @@ public class TotalActivity extends AppCompatActivity implements View.OnClickList
                 startActivity(intent);
                 break;
             case R.id.fab_two:
+
+                chi = settings.getBoolean("chi", false);
+                eng = settings.getBoolean("eng", false);
                 if (isShow) {
                     animationHint(fab_one, totalD);
                     animationHint(fab_two, 2 * totalD);
                     animationHint(fab_three, 3 * totalD);
                     isShow = false;
                 }
-                new PhotoDialog(TotalActivity.this).show();
+                if (eng && chi) {
+                    new PhotoDialog(TotalActivity.this).show();
+                } else {
+                    Toast.makeText(TotalActivity.this, "正在更新中，请稍等。", Toast.LENGTH_SHORT).show();
+                }
+
                 break;
             case R.id.fab_three:
                 if (isShow) {
@@ -481,6 +518,21 @@ public class TotalActivity extends AppCompatActivity implements View.OnClickList
                 }
             }
         }
+    }
+
+    @Override
+    protected void onResume() {
+        MathUtils.budget = settings.getFloat("budget", 0);
+        MathUtils.flags = settings.getBoolean("flags", false);
+        MathUtils.account = settings.getString("account", "");
+        MathUtils.head = settings.getString("head", "");
+        MathUtils.introduce = settings.getString("introduce", "--");
+        MathUtils.username = settings.getString("username", "--");
+        chi = settings.getBoolean("chi", false);
+        eng = settings.getBoolean("eng", false);
+        username.setText(MathUtils.username);
+        description.setText(MathUtils.introduce);
+        super.onResume();
     }
 
     private boolean hasSdcard() {

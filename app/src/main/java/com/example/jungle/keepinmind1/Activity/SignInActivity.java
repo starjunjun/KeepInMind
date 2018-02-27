@@ -86,7 +86,7 @@ public class SignInActivity extends BaseActivity {
                                 editor.putString("head",rj.getResult().getHeadimg());
                                 editor.putString("introduce",rj.getResult().getIntroduce());
                                 MathUtils.account=rj.getResult().getAccount();
-                                editor.putBoolean("flag",true);
+                                editor.putBoolean("flags",true);
                                 MathUtils.flags=true;
                                 editor.commit();
                                 finish();

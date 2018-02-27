@@ -40,10 +40,12 @@ public class DownloadService extends IntentService {
         if (!settings.getBoolean("chi", false)) {
             DownFileUtil.download("chi", downloadUrl);
             editor.putBoolean("chi", true);
+            editor.commit();
         }
         if (!settings.getBoolean("eng", false)) {
             DownFileUtil.download("eng", downloadUrl1);
             editor.putBoolean("eng", true);
+            editor.commit();
         }
         if (settings.getBoolean("chi", false) && settings.getBoolean("eng", false)) {
             manager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);

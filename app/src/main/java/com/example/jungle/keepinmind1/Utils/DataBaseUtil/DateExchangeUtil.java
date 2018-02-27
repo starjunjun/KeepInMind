@@ -57,7 +57,7 @@ public class DateExchangeUtil {
      * 月.日
      */
     public static String getWeekStartTime() {
-        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("MM.dd", Locale.getDefault());
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy.MM.dd", Locale.getDefault());
         Calendar cal = Calendar.getInstance();
         int day_of_week = cal.get(Calendar.DAY_OF_WEEK) - 1;
         if (day_of_week == 0) {
