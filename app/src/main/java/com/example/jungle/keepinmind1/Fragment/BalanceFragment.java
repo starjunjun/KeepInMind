@@ -39,7 +39,7 @@ public class BalanceFragment extends Fragment {
     private ArrayList<String> data;
     private LinearLayout Linear3;
     private com.rengwuxian.materialedittext.MaterialEditText remarks;
-    private EditText moneyTv;
+    private TextView moneyTv;
 
     public BalanceFragment() {
         // Required empty public constructor
@@ -60,7 +60,7 @@ public class BalanceFragment extends Fragment {
         ok_button = (Button) view.findViewById(R.id.ok_button);
         Account = (TextView) view.findViewById(R.id.account);
         type1 = (TextView) view.findViewById(R.id.type1);
-        moneyTv = (EditText) view.findViewById(R.id.moneyTv);
+        moneyTv = (TextView) view.findViewById(R.id.moneyTv);
         Linear3 = (LinearLayout) view.findViewById(R.id.Linear3);
         remarks = (MaterialEditText) view.findViewById(R.id.edittext);
 
@@ -113,6 +113,7 @@ public class BalanceFragment extends Fragment {
                 }
 
                 EventBus.getDefault().post("lolo");
+                mActivity.finish();
             }
         });
 

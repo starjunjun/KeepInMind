@@ -31,7 +31,7 @@ import rx.Observable;
 
 public interface MyService {
 
-    String BASE_URL = "http://192.168.1.104:8080";  // 地址
+    String BASE_URL = "http://192.168.199.107:8080";  // 地址
 
     //    @FormUrlEncoded
 //    @POST("buyer-cloth/cloth/get-seller-cloth")

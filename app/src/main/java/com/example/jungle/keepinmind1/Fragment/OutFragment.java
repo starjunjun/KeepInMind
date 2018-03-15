@@ -115,7 +115,7 @@ public class OutFragment extends Fragment {
                     DataBaseUtils.add(dbBean);
                 }
                 EventBus.getDefault().post("lolo");
-
+                mActivity.finish();
             }
         });
         Linear2.setOnClickListener(new View.OnClickListener() {

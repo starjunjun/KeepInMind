@@ -94,6 +94,7 @@ public class InFragment extends Fragment {
 //            }
 //        };
 //        in_money.setKeyListener(listener);
+        Linear2.requestFocus();
         in_money.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -114,6 +115,7 @@ public class InFragment extends Fragment {
                 }
 
                 EventBus.getDefault().post("lolo");
+                mActivity.finish();
 
 
             }

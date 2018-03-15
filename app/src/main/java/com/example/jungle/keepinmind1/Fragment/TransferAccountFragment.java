@@ -40,7 +40,7 @@ public class TransferAccountFragment extends Fragment {
     private TextView type1;
     private Activity mActivity;
     private LinearLayout Linear2;
-    private EditText moneyTv;
+    private TextView moneyTv;
     private TextView Account;
     private com.rengwuxian.materialedittext.MaterialEditText remarks;
 
@@ -67,7 +67,7 @@ public class TransferAccountFragment extends Fragment {
         out = (LinearLayout) view.findViewById(R.id.out);
         ok_button = (Button) view.findViewById(R.id.ok_button);
         type1 = (TextView) view.findViewById(R.id.type1);
-        moneyTv = (EditText) view.findViewById(R.id.moneyTv);
+        moneyTv = (TextView) view.findViewById(R.id.moneyTv);
         remarks = (MaterialEditText) view.findViewById(R.id.edittext);
         Account = (TextView) view.findViewById(R.id.account);
 //        moneyTv.setInputType(EditorInfo.TYPE_CLASS_PHONE);
@@ -118,6 +118,7 @@ public class TransferAccountFragment extends Fragment {
                 }
 
                 EventBus.getDefault().post("lolo");
+                mActivity.finish();
             }
         });
         Linear2.setOnClickListener(new View.OnClickListener() {
