@@ -114,7 +114,7 @@ public class DatabaseDump {
     public void writeExcel(String tableName) {
         WritableWorkbook wwb = null;
         String fileName;
-        fileName = "/scard/" + tableName + ".xls";
+        fileName = "/sdcard/" + tableName + ".xls";
         int r = 0;
 
         String sql = "select * from " + tableName;
