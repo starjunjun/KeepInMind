@@ -90,15 +90,16 @@ public class DatabaseDump {
             //把刚获取的列存入list
             mmdbb.setId((int) Integer.parseInt(str[0]));
             mmdbb.setAccount(str[1]);
-            mmdbb.setType(str[2]);
-            mmdbb.setRemarks(str[3]);
-            mmdbb.setClassification(str[4]);
-            if (!str[5].equals("")) {
-                mmdbb.setTime(Long.parseLong(str[5]));
+            mmdbb.setClassification(str[2]);
+            mmdbb.setType(str[3]);
+            if (!str[4].equals("")) {
+                mmdbb.setMoney(Double.parseDouble(str[4]));
             }
+            mmdbb.setRemarks(str[5]);
             if (!str[6].equals("")) {
-                mmdbb.setMoney(Double.parseDouble(str[6]));
+                mmdbb.setTime(Long.parseLong(str[6]));
             }
+
 
             DataBaseUtils.add(mmdbb);
         }
