@@ -30,8 +30,8 @@ import retrofit2.http.Url;
 import rx.Observable;
 
 public interface MyService {
-
-    String BASE_URL = "http://192.168.199.107:8080";  // 地址
+//    http://90.0.1.169:8080/
+    String BASE_URL = "http://119.29.243.162/keepInMindService_war/";  // 地址
 
     //    @FormUrlEncoded
 //    @POST("buyer-cloth/cloth/get-seller-cloth")
@@ -42,23 +42,23 @@ public interface MyService {
 //    Observable<ResultBean<Data>> getData(@Field("token") String token);
 //
 //    // 首页 - 获取当前登录用户及其所关注（授权）用户的最新微博
-    @GET("/Test/getpassage")
+    @GET("Test/getpassage")
     Observable<RetrunJson<List<ManageMoneyPassage>>> getpassage();
 
-    @GET("/Test/getgupiao")
+    @GET("Test/getgupiao")
     Observable<RetrunJson<List<GuPiaoBean>>> getgupiao();
 
     @GET()
     Observable<RetrunJson<Map<String, JiJinBean>[]>> getJiJin(@Url String url);
 
-    @GET("/Test/searchgupiao")
+    @GET("Test/searchgupiao")
     Observable<RetrunJson<GuPiaoContent>> getGuPiaoByCode(@Query("code") String code);
 
-    @GET("/Test/getad")
+    @GET("Test/getad")
     Observable<RetrunJson<List<ManageMoneyPassage>>> getAd();
 
     @Multipart
-    @POST("/Test/upload")
+    @POST("Test/upload")
     Observable<RetrunJson<String>> upload(@Part("username") RequestBody username,
                                           @Part MultipartBody.Part file);
 
@@ -68,11 +68,11 @@ public interface MyService {
 
 
     @FormUrlEncoded
-    @POST("/Test/sign")
+    @POST("Test/sign")
     Observable<RetrunJson<User>> sign(@Field("account") String account, @Field("password") String password);
 
     @FormUrlEncoded
-    @POST("/Test/register")
+    @POST("Test/register")
     Observable<RetrunJson<String>> register(@Field("username") String username,@Field("account") String account,@Field("password") String password);
 
 }
