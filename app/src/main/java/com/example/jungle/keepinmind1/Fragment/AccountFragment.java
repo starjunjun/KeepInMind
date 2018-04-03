@@ -105,9 +105,14 @@ public class AccountFragment extends Fragment {
         investmentMoney1.setText(MathUtils.format(DataBaseUtils.sumMoneyInAndOut(DataBaseUtils.queryUseAccount(startTime, currentTime, "余额宝(CNY)"))) + "");
         investmentMoney2.setText(MathUtils.format(DataBaseUtils.sumMoneyInAndOut(DataBaseUtils.queryUseAccount(startTime, currentTime, "股票账户(CNY)"))) + "");
         investmentTotal.setText(Double.parseDouble(investmentMoney.getText().toString()) + Double.parseDouble(investmentMoney1.getText().toString()) + Double.parseDouble(investmentMoney2.getText().toString()) + "");
-        liabilities.setText("-"+creditTotal.getText());
+        if(Double.parseDouble(creditTotal.getText().toString())<0){
+            liabilities.setText(creditTotal.getText());
+        }else{
+            liabilities.setText("0");
+        }
+
         assets.setText(Double.parseDouble(cashTotal.getText().toString().trim())+Double.parseDouble(financeTotal.getText().toString())+Double.parseDouble(fictitiousTotal.getText().toString())+"");
-        net_assets.setText(Double.parseDouble(assets.getText().toString())+Double.parseDouble(liabilities.getText().toString())+"");
+        net_assets.setText(Double.parseDouble(assets.getText().toString())+Double.parseDouble(creditTotal.getText().toString())+"");
         return view;
     }
 
@@ -121,6 +126,7 @@ public class AccountFragment extends Fragment {
         } catch (ParseException e) {
             e.printStackTrace();
         }
+
         cash.setText(MathUtils.format(DataBaseUtils.sumMoneyInAndOut(DataBaseUtils.queryUseAccount(startTime, currentTime, "现金(CNY)"))) + "");
         cashTotal.setText(cash.getText());
         financeCardMoney.setText(MathUtils.format(DataBaseUtils.sumMoneyInAndOut(DataBaseUtils.queryUseAccount(startTime, currentTime, "银行卡(CNY)"))) + "");
@@ -140,6 +146,12 @@ public class AccountFragment extends Fragment {
         investmentMoney1.setText(MathUtils.format(DataBaseUtils.sumMoneyInAndOut(DataBaseUtils.queryUseAccount(startTime, currentTime, "余额宝(CNY)"))) + "");
         investmentMoney2.setText(MathUtils.format(DataBaseUtils.sumMoneyInAndOut(DataBaseUtils.queryUseAccount(startTime, currentTime, "股票账户(CNY)"))) + "");
         investmentTotal.setText(Double.parseDouble(investmentMoney.getText().toString()) + Double.parseDouble(investmentMoney1.getText().toString()) + Double.parseDouble(investmentMoney2.getText().toString()) + "");
-
+        if(Double.parseDouble(creditTotal.getText().toString())<0){
+            liabilities.setText(creditTotal.getText());
+        }else{
+            liabilities.setText("0");
+        }
+        assets.setText(Double.parseDouble(cashTotal.getText().toString().trim())+Double.parseDouble(financeTotal.getText().toString())+Double.parseDouble(fictitiousTotal.getText().toString())+"");
+        net_assets.setText(Double.parseDouble(assets.getText().toString())+Double.parseDouble(creditTotal.getText().toString())+"");
     }
 }
